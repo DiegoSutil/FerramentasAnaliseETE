@@ -731,11 +731,11 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         const organicInfluentConcentrationInput = document.getElementById('organicInfluentConcentration');
         const organicEffluentConcentrationInput = document.getElementById('organicEffluentConcentration');
-        const organicLoadFlowRateInput = document.getElementById('organicLoadFlowRate'); // Nome da variável corrigido
+        const organicLoadFlowRateInput = document.getElementById('organicLoadFlowRate'); // Corrigido nome da variável
 
         if (organicInfluentConcentrationInput) organicInfluentConcentrationInput.value = '';
         if (organicEffluentConcentrationInput) organicEffluentConcentrationInput.value = '';
-        if (organicLoadFlowRateInput) organicLoadFlowRateInput.value = ''; // Uso do nome da variável corrigido
+        if (organicLoadFlowRateInput) organicLoadFlowRateInput.value = ''; // Uso da variável corrigida
         console.log('Todos os campos de input limpos.');
     };
 
