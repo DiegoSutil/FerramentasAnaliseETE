@@ -13,6 +13,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let isFirebaseInitialized = false;
 
     // Configuração do Firebase fornecida pelo utilizador
+    // ESTE BLOCO É O MAIS IMPORTANTE
     const firebaseConfig = {
         apiKey: "AIzaSyCnFsX4MwdAR3yC0MAoK9x3II3UGt1DDng",
         authDomain: "ferramentasete.firebaseapp.com",
@@ -25,6 +26,32 @@ document.addEventListener('DOMContentLoaded', () => {
     const appId = (firebaseConfig && firebaseConfig.projectId)
         ? firebaseConfig.projectId
         : 'default-app-id';
+    
+    // --- FUNÇÕES AUXILIARES ---
+    const getEl = (id) => document.getElementById(id);
+
+    // --- MANIPULAÇÃO DO ESTADO DOS BOTÕES DE GUARDAR ---
+    const saveButtons = [
+        getEl('saveSludgeAgeData'),
+        getEl('savePhysicalChemicalData'),
+        getEl('saveOrganicLoadData')
+    ];
+
+    const setSaveButtonsState = (enabled) => {
+        saveButtons.forEach(button => {
+            if (button) {
+                button.disabled = !enabled;
+                if (enabled) {
+                    button.classList.remove('opacity-50', 'cursor-not-allowed');
+                    button.title = 'Guardar o resultado no histórico';
+                } else {
+                    button.classList.add('opacity-50', 'cursor-not-allowed');
+                    button.title = 'A ligar à base de dados...';
+                }
+            }
+        });
+    };
+
 
     // --- INICIALIZAÇÃO DO FIREBASE ---
     if (firebaseConfig && firebaseConfig.apiKey) {
@@ -39,24 +66,28 @@ document.addEventListener('DOMContentLoaded', () => {
             onAuthStateChanged(auth, user => {
                 if (user) {
                     currentUserId = user.uid;
-                    document.getElementById('userIdDisplay').textContent = `ID Anónimo: ${currentUserId.substring(0, 12)}...`;
+                    getEl('userIdDisplay').textContent = `ID Anónimo: ${currentUserId.substring(0, 12)}...`;
+                    setSaveButtonsState(true); // Ativa os botões
                     loadAllHistories();
                 } else {
+                    setSaveButtonsState(false); // Mantém os botões desativados
                     signInAnonymously(auth).catch(error => {
                         console.error("Erro no sign-in anónimo:", error);
                         currentUserId = 'local-fallback-id-' + crypto.randomUUID();
-                        document.getElementById('userIdDisplay').textContent = "DB Offline";
+                        getEl('userIdDisplay').textContent = "DB Offline";
                     });
                 }
             });
 
         } catch (e) {
             console.error("Erro fatal ao inicializar Firebase SDK:", e);
-            document.getElementById('userIdDisplay').textContent = `DB Offline (Erro)`;
+            getEl('userIdDisplay').textContent = `DB Offline (Erro)`;
+            setSaveButtonsState(false);
         }
     } else {
         console.warn("Configuração do Firebase não encontrada. As funcionalidades de base de dados estão inativas.");
-        document.getElementById('userIdDisplay').textContent = `DB Offline (Sem Config)`;
+        getEl('userIdDisplay').textContent = `DB Offline (Sem Config)`;
+        setSaveButtonsState(false);
     }
 
 
@@ -71,7 +102,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const showSection = (targetId) => {
         sections.forEach(id => {
-            const section = document.getElementById(id);
+            const section = getEl(id);
             if (id === targetId) {
                 section.classList.remove('hidden-section');
                 section.classList.add('visible-section');
@@ -80,18 +111,17 @@ document.addEventListener('DOMContentLoaded', () => {
                 section.classList.add('hidden-section');
             }
         });
-        Object.values(navButtons).forEach(btnId => document.getElementById(btnId).classList.remove('active-nav-button'));
-        document.getElementById(navButtons[targetId]).classList.add('active-nav-button');
+        Object.values(navButtons).forEach(btnId => getEl(btnId).classList.remove('active-nav-button'));
+        getEl(navButtons[targetId]).classList.add('active-nav-button');
     };
     
     // Anexar eventos aos botões de navegação
     Object.entries(navButtons).forEach(([sectionId, btnId]) => {
-        document.getElementById(btnId).addEventListener('click', () => showSection(sectionId));
+        getEl(btnId).addEventListener('click', () => showSection(sectionId));
     });
 
 
-    // --- FUNÇÕES AUXILIARES ---
-    const getEl = (id) => document.getElementById(id);
+    // --- MAIS FUNÇÕES AUXILIARES ---
     const getVal = (id) => parseFloat(getEl(id).value);
     
     // Função para obter classe de cor baseada no valor e tipo
@@ -391,5 +421,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
     // --- INICIALIZAÇÃO ---
+    setSaveButtonsState(false); // Desativa os botões ao iniciar
     showSection('sludgeAgeSection');
 });
