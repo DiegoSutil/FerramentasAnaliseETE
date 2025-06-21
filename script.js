@@ -12,10 +12,15 @@ document.addEventListener('DOMContentLoaded', () => {
     let currentUserId = null;
     let isFirebaseInitialized = false;
 
-    // Configuração do Firebase injetada pelo ambiente ou fallback
-    const firebaseConfig = typeof window.__firebase_config !== 'undefined'
-        ? JSON.parse(window.__firebase_config)
-        : null;
+    // Configuração do Firebase fornecida pelo utilizador
+    const firebaseConfig = {
+        apiKey: "AIzaSyCnFsX4MwdAR3yC0MAoK9x3II3UGt1DDng",
+        authDomain: "ferramentasete.firebaseapp.com",
+        projectId: "ferramentasete",
+        storageBucket: "ferramentasete.firebasestorage.app",
+        messagingSenderId: "436175488554",
+        appId: "1:436175488554:web:6bb40da9db9c88674ca553"
+    };
 
     const appId = (firebaseConfig && firebaseConfig.projectId)
         ? firebaseConfig.projectId
