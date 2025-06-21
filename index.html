@@ -13,63 +13,17 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
 
-    <!-- Estilos Personalizados e Ícones -->
-    <style>
-        /* Define a fonte base e um fundo suave */
-        body {
-            font-family: 'Roboto', sans-serif;
-            background-color: #f8fafc; /* bg-slate-50 */
-        }
-
-        /* Efeito de transição suave para as seções */
-        .section-content {
-            transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
-        }
-        .hidden-section {
-            opacity: 0;
-            transform: translateY(20px);
-            display: none;
-        }
-
-        /* Estilo dos cards */
-        .calculator-card {
-            background-color: white;
-            border-radius: 0.75rem; /* rounded-xl */
-            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1); /* shadow-lg */
-            transition: all 0.3s ease-in-out;
-        }
-        .calculator-card:hover {
-             box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1); /* shadow-xl */
-             transform: translateY(-5px);
-        }
-        
-        /* Estilo para inputs e botões */
-        .custom-input, .custom-select {
-            border-radius: 0.5rem;
-            border: 1px solid #d1d5db; /* border-gray-300 */
-            padding: 0.75rem 1rem;
-            transition: all 0.2s ease-in-out;
-        }
-        .custom-input:focus, .custom-select:focus {
-            outline: none;
-            border-color: #2563eb; /* blue-600 */
-            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3);
-        }
-
-        /* Classes de resultado para feedback visual */
-        .result-positive { color: #16a34a; /* green-600 */ }
-        .result-warning { color: #f59e0b; /* amber-500 */ }
-        .result-negative { color: #dc2626; /* red-600 */ }
-    </style>
+    <!-- Estilos Personalizados -->
+    <link rel="stylesheet" href="style.css">
 </head>
 <body class="antialiased text-slate-700">
 
     <!-- Cabeçalho -->
-    <header class="bg-white shadow-md sticky top-0 z-10">
+    <header class="bg-white shadow-md sticky top-0 z-20">
         <div class="container mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex items-center justify-between h-16">
                 <div class="flex items-center space-x-4">
-                    <img src="https://github.com/DiegoSutil/calculadora-de-lodo/blob/e6af6bb6071166eb8a6dfd01725ad76460471786/images/logo_braspine_horizontal_positivo_cor_rgb.png?raw=true" alt="Logo Braspine" class="h-8 w-auto" onerror="this.style.display='none'">
+                    <img src="https://github.com/DiegoSutil/calculadora-de-lodo/blob/e6af6bb6071166eb8a6dfd01725ad76460471786/images/logo_braspine_horizontal_positivo_cor_rgb.png?raw=true" alt="Logo Braspine" class="h-8 w-auto" onerror="this.src='https://placehold.co/200x50/ffffff/333333?text=Braspine'; this.onerror=null;">
                     <h1 class="text-xl font-bold text-slate-800 hidden sm:block">Painel de Análise ETE/ETAR</h1>
                 </div>
                 <div id="userIdDisplay" class="text-xs text-slate-500 break-all text-right">
@@ -108,7 +62,6 @@
             <section id="sludgeAgeSection" class="section-content">
                 <div class="calculator-card p-6 lg:p-8">
                     <h2 class="text-2xl font-bold text-slate-800 mb-6">Calculadora de Idade do Lodo (ISR)</h2>
-                    
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                         <div><label for="aerationTankVolume">Volume do Tanque (m³)</label><input type="number" id="aerationTankVolume" placeholder="Ex: 500" class="custom-input w-full"></div>
                         <div><label for="aerationTankVSS">SSV no Tanque (mg/L)</label><input type="number" id="aerationTankVSS" placeholder="Ex: 3000" class="custom-input w-full"></div>
@@ -117,18 +70,15 @@
                         <div><label for="effluentFlowRate">Vazão do Efluente (m³/dia)</label><input type="number" id="effluentFlowRate" placeholder="Ex: 400" class="custom-input w-full"></div>
                         <div><label for="effluentVSS">SSV do Efluente (mg/L)</label><input type="number" id="effluentVSS" placeholder="Ex: 20" class="custom-input w-full"></div>
                     </div>
-
                     <div class="flex flex-col sm:flex-row gap-4">
-                        <button id="calculateButton" class="action-button primary-button w-full">Calcular</button>
+                        <button id="calculateSludgeAgeButton" class="action-button primary-button w-full">Calcular</button>
                         <button id="saveSludgeAgeData" class="action-button secondary-button w-full">Guardar Resultado</button>
                     </div>
-
-                    <div id="errorDisplay" class="feedback-box error-box hidden mt-6"></div>
-                    <div id="resultDisplay" class="feedback-box success-box hidden mt-6">
+                    <div id="sludgeAgeErrorDisplay" class="feedback-box error-box hidden mt-6"></div>
+                    <div id="sludgeAgeResultDisplay" class="feedback-box success-box hidden mt-6">
                         <h3 class="font-bold">Idade do Lodo Calculada:</h3>
                         <p id="sludgeAgeResult" class="text-2xl font-bold"></p>
                     </div>
-
                     <div id="sludgeAgeHistory" class="mt-8 history-table"></div>
                 </div>
             </section>
@@ -137,7 +87,6 @@
             <section id="physicalChemicalSection" class="section-content hidden-section">
                 <div class="calculator-card p-6 lg:p-8">
                      <h2 class="text-2xl font-bold text-slate-800 mb-6">Calculadora de Eficiência Físico-Química</h2>
-
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                         <div><label for="phyChemInitialTurbidity">Turbidez Inicial (NTU)</label><input type="number" id="phyChemInitialTurbidity" placeholder="Ex: 100" class="custom-input w-full"></div>
                         <div><label for="phyChemFinalTurbidity">Turbidez Final (NTU)</label><input type="number" id="phyChemFinalTurbidity" placeholder="Ex: 5" class="custom-input w-full"></div>
@@ -147,12 +96,10 @@
                         <div><label for="phyChemDosageUnit">Unidade de Dosagem</label><select id="phyChemDosageUnit" class="custom-select w-full"><option value="mg/L">mg/L</option><option value="mL/L">mL/L</option></select></div>
                         <div class="md:col-span-2"><label for="phyChemEtaFlowRate">Vazão da ETA (m³/dia)</label><input type="number" id="phyChemEtaFlowRate" placeholder="Ex: 5000" class="custom-input w-full"></div>
                     </div>
-                    
                     <div class="flex flex-col sm:flex-row gap-4">
-                        <button id="calculatePhysicalChemical" class="action-button primary-button w-full">Calcular</button>
+                        <button id="calculatePhysicalChemicalButton" class="action-button primary-button w-full">Calcular</button>
                         <button id="savePhysicalChemicalData" class="action-button secondary-button w-full">Guardar Resultado</button>
                     </div>
-
                     <div id="phyChemErrorDisplay" class="feedback-box error-box hidden mt-6"></div>
                     <div id="phyChemResultDisplay" class="feedback-box success-box hidden mt-6">
                         <h3 class="font-bold mb-2">Resultados da Eficiência:</h3>
@@ -162,7 +109,6 @@
                             <p><strong>Dosagem Diária:</strong> <span id="phyChemDailyDosage">--</span></p>
                         </div>
                     </div>
-
                      <div id="physicalChemicalHistory" class="mt-8 history-table"></div>
                 </div>
             </section>
@@ -171,18 +117,15 @@
             <section id="organicLoadSection" class="section-content hidden-section">
                 <div class="calculator-card p-6 lg:p-8">
                      <h2 class="text-2xl font-bold text-slate-800 mb-6">Calculadora de Carga Orgânica (DBO/DQO)</h2>
-
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                         <div><label for="organicInfluentConcentration">Concentração Afluente (mg/L)</label><input type="number" id="organicInfluentConcentration" placeholder="Ex: 300" class="custom-input w-full"></div>
                         <div><label for="organicEffluentConcentration">Concentração Efluente (mg/L)</label><input type="number" id="organicEffluentConcentration" placeholder="Ex: 50" class="custom-input w-full"></div>
                         <div class="md:col-span-2"><label for="organicLoadFlowRate">Vazão (m³/dia)</label><input type="number" id="organicLoadFlowRate" placeholder="Ex: 5000" class="custom-input w-full"></div>
                     </div>
-
                      <div class="flex flex-col sm:flex-row gap-4">
                         <button id="calculateOrganicLoadButton" class="action-button primary-button w-full">Calcular</button>
                         <button id="saveOrganicLoadData" class="action-button secondary-button w-full">Guardar Resultado</button>
                     </div>
-
                     <div id="organicLoadErrorDisplay" class="feedback-box error-box hidden mt-6"></div>
                     <div id="organicLoadResultDisplay" class="feedback-box success-box hidden mt-6">
                         <h3 class="font-bold mb-2">Resultados da Carga Orgânica:</h3>
@@ -192,7 +135,6 @@
                              <p><strong>Eficiência de Remoção:</strong> <span id="organicLoadEfficiencyResult">-- %</span></p>
                         </div>
                     </div>
-
                      <div id="organicLoadHistory" class="mt-8 history-table"></div>
                 </div>
             </section>
@@ -222,307 +164,19 @@
         <p class="text-sm text-slate-500">Desenvolvido por Diego Machado Sutil</p>
     </footer>
 
+    <!-- Modal de Confirmação -->
+    <div id="confirmModal" class="fixed inset-0 bg-black bg-opacity-50 z-30 hidden items-center justify-center">
+        <div class="bg-white rounded-lg shadow-xl p-6 w-full max-w-sm mx-4">
+            <h3 id="confirmModalTitle" class="text-lg font-bold text-slate-800 mb-4">Confirmar Ação</h3>
+            <p id="confirmModalMessage" class="text-slate-600 mb-6">Tem a certeza que deseja excluir este registo?</p>
+            <div class="flex justify-end gap-4">
+                <button id="confirmModalCancel" class="action-button secondary-button">Cancelar</button>
+                <button id="confirmModalOk" class="action-button danger-button">Excluir</button>
+            </div>
+        </div>
+    </div>
+
     <!-- Script Principal -->
-    <script type="module">
-        // Importações do Firebase
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-app.js";
-        import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-auth.js";
-        import { getFirestore, collection, addDoc, doc, deleteDoc, query, orderBy, onSnapshot } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-firestore.js";
-
-        // Configuração do Tailwind JIT para classes dinâmicas
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        slate: tailwind.colors.slate,
-                        blue: tailwind.colors.blue,
-                        green: tailwind.colors.green,
-                        amber: tailwind.colors.amber,
-                        red: tailwind.colors.red,
-                    }
-                }
-            },
-            // Classes para não serem purgadas pelo Tailwind
-            safelist: [
-                'result-positive', 'result-warning', 'result-negative',
-                'bg-green-100', 'border-green-400', 'text-green-800',
-                'bg-red-100', 'border-red-400', 'text-red-800'
-            ]
-        }
-        
-        // --- ESTILOS DINÂMICOS COM TAILWIND ---
-        // Aplicar estilos aos botões e elementos que não podem ser estilizados diretamente no HTML
-        const styleSheet = document.createElement("style");
-        styleSheet.innerText = `
-            .nav-button { @apply flex items-center justify-center space-x-2 w-full p-3 font-semibold text-slate-600 bg-white rounded-lg shadow-sm transition-all duration-200; }
-            .nav-button:hover { @apply bg-blue-500 text-white; }
-            .active-nav-button { @apply bg-blue-600 text-white ring-2 ring-offset-2 ring-blue-600; }
-            .active-nav-button:hover { @apply bg-blue-600; }
-            .action-button { @apply px-5 py-3 font-semibold rounded-lg shadow-sm transition-transform transform hover:scale-105; }
-            .primary-button { @apply bg-blue-600 text-white hover:bg-blue-700; }
-            .secondary-button { @apply bg-slate-200 text-slate-800 hover:bg-slate-300; }
-            .history-table { @apply w-full overflow-hidden border border-slate-200 rounded-lg; }
-            .feedback-box { @apply p-4 border rounded-lg; }
-            .success-box { @apply bg-green-50 border-green-300 text-green-800; }
-            .error-box { @apply bg-red-50 border-red-300 text-red-800; }
-        `;
-        document.head.appendChild(styleSheet);
-
-
-        // --- LÓGICA DA APLICAÇÃO ---
-        const firebaseConfig = typeof window.__firebase_config !== 'undefined'
-            ? JSON.parse(window.__firebase_config)
-            : { projectId: "default-app-id" }; 
-        
-        const appId = firebaseConfig.projectId;
-        let auth, db, currentUserId = null;
-
-        try {
-            const app = initializeApp(firebaseConfig);
-            auth = getAuth(app);
-            db = getFirestore(app);
-
-            onAuthStateChanged(auth, user => {
-                if (user) {
-                    // Utilizador está autenticado.
-                    currentUserId = user.uid;
-                    document.getElementById('userIdDisplay').textContent = `ID Anónimo: ${currentUserId.substring(0,12)}...`;
-                    loadAllHistories();
-                } else {
-                    // Utilizador não está autenticado. Tentar autenticação anónima.
-                    // O listener será chamado novamente em caso de sucesso.
-                    signInAnonymously(auth).catch(error => { 
-                        console.error("Erro no sign-in anónimo:", error);
-                        currentUserId = 'local-fallback-id'; 
-                        document.getElementById('userIdDisplay').textContent = "DB Offline";
-                    });
-                }
-            });
-        } catch (e) {
-            console.error("Erro no Firebase: ", e);
-            document.getElementById('userIdDisplay').textContent = "DB Offline";
-        }
-        
-        // --- MANIPULAÇÃO DA UI ---
-        const sections = ['sludgeAgeSection', 'physicalChemicalSection', 'organicLoadSection', 'howItWorksSection'];
-        const navButtons = {
-            'sludgeAgeSection': 'showSludgeAge',
-            'physicalChemicalSection': 'showPhysicalChemical',
-            'organicLoadSection': 'showOrganicLoad',
-            'howItWorksSection': 'showHowItWorks'
-        };
-
-        function showSection(targetId) {
-            sections.forEach(id => {
-                const section = document.getElementById(id);
-                if(id === targetId) {
-                    section.classList.remove('hidden-section');
-                    // A pequena espera garante que a transição CSS ocorra
-                    setTimeout(() => section.style.opacity = 1, 10);
-                } else {
-                    section.style.opacity = 0;
-                    // A pequena espera garante que a transição CSS ocorra
-                    setTimeout(() => section.classList.add('hidden-section'), 500);
-                }
-            });
-
-            Object.values(navButtons).forEach(btnId => document.getElementById(btnId).classList.remove('active-nav-button'));
-            document.getElementById(navButtons[targetId]).classList.add('active-nav-button');
-        }
-
-        Object.entries(navButtons).forEach(([sectionId, btnId]) => {
-            document.getElementById(btnId).addEventListener('click', () => showSection(sectionId));
-        });
-
-        // --- FUNÇÕES DE CÁLCULO ---
-        function calculateSludgeAge() {
-            const get = id => parseFloat(document.getElementById(id).value);
-            const inputs = {
-                aerationTankVolume: get('aerationTankVolume'), aerationTankVSS: get('aerationTankVSS'),
-                discardFlowRate: get('discardFlowRate'), discardVSS: get('discardVSS'),
-                effluentFlowRate: get('effluentFlowRate'), effluentVSS: get('effluentVSS'),
-            };
-
-            const errorDisplay = document.getElementById('errorDisplay');
-            errorDisplay.classList.add('hidden');
-
-            if (Object.values(inputs).some(isNaN) || Object.values(inputs).some(v => v < 0)) {
-                errorDisplay.textContent = 'Por favor, preencha todos os campos com valores numéricos positivos.';
-                errorDisplay.classList.remove('hidden');
-                return null;
-            }
-
-            const massInTank = inputs.aerationTankVolume * 1000 * inputs.aerationTankVSS;
-            const massDiscarded = inputs.discardFlowRate * 1440 * inputs.discardVSS;
-            const massInEffluent = inputs.effluentFlowRate * 1000 * inputs.effluentVSS;
-            const denominator = massDiscarded + massInEffluent;
-            
-            if (denominator === 0) {
-                errorDisplay.textContent = 'A soma das massas de SSV removidas é zero. Verifique os valores.';
-                errorDisplay.classList.remove('hidden');
-                return null;
-            }
-
-            const calculatedISR = massInTank / denominator;
-            const resultSpan = document.getElementById('sludgeAgeResult');
-            resultSpan.textContent = `${calculatedISR.toFixed(2)} dias`;
-            resultSpan.className = `text-2xl font-bold ${getSludgeAgeColorClass(calculatedISR)}`;
-            document.getElementById('resultDisplay').classList.remove('hidden');
-            return { ...inputs, calculatedISR };
-        }
-
-        function getSludgeAgeColorClass(value) {
-            if (value >= 5 && value <= 15) return 'result-positive';
-            if ((value > 15 && value <= 20) || (value < 5 && value >= 0)) return 'result-warning';
-            return 'result-negative';
-        }
-
-        // ... (resto das funções de cálculo e lógicas mantidas, mas adaptadas se necessário) ...
-         function calculatePhysicalChemicalEfficiency() {
-            const get = id => parseFloat(document.getElementById(id).value);
-            const inputs = {
-                initialTurbidity: get('phyChemInitialTurbidity'), finalTurbidity: get('phyChemFinalTurbidity'),
-                initialColor: get('phyChemInitialColor'), finalColor: get('phyChemFinalColor'),
-                idealDosage: get('phyChemIdealDosage'), etaFlowRate: get('phyChemEtaFlowRate'),
-                dosageUnit: document.getElementById('phyChemDosageUnit').value
-            };
-            const errorDisplay = document.getElementById('phyChemErrorDisplay');
-            errorDisplay.classList.add('hidden');
-            if (Object.values(inputs).slice(0, 6).some(isNaN)) {
-                errorDisplay.textContent = 'Por favor, preencha todos os campos.';
-                errorDisplay.classList.remove('hidden');
-                return null;
-            }
-            const turbidityEfficiency = ((inputs.initialTurbidity - inputs.finalTurbidity) / inputs.initialTurbidity) * 100;
-            const colorEfficiency = ((inputs.initialColor - inputs.finalColor) / inputs.initialColor) * 100;
-            const dailyDosage = inputs.dosageUnit === 'mg/L' ? (inputs.idealDosage * inputs.etaFlowRate) / 1000 : inputs.idealDosage * inputs.etaFlowRate;
-            const dailyDosageUnit = inputs.dosageUnit === 'mg/L' ? 'kg/dia' : 'L/dia';
-            
-            document.getElementById('phyChemTurbidityEfficiency').textContent = `${turbidityEfficiency.toFixed(2)} %`;
-            document.getElementById('phyChemColorEfficiency').textContent = `${colorEfficiency.toFixed(2)} %`;
-            document.getElementById('phyChemDailyDosage').textContent = `${dailyDosage.toFixed(2)} ${dailyDosageUnit}`;
-            document.getElementById('phyChemResultDisplay').classList.remove('hidden');
-            return { ...inputs, turbidityEfficiency, colorEfficiency, dailyDosage, dailyDosageUnit };
-        }
-
-        function calculateOrganicLoad() {
-            const get = id => parseFloat(document.getElementById(id).value);
-            const inputs = {
-                influentConcentration: get('organicInfluentConcentration'),
-                effluentConcentration: get('organicEffluentConcentration'),
-                flowRate: get('organicLoadFlowRate')
-            };
-            const errorDisplay = document.getElementById('organicLoadErrorDisplay');
-            errorDisplay.classList.add('hidden');
-            if (Object.values(inputs).some(isNaN)) {
-                errorDisplay.textContent = 'Por favor, preencha todos os campos.';
-                errorDisplay.classList.remove('hidden');
-                return null;
-            }
-            const influentLoad = (inputs.influentConcentration * inputs.flowRate) / 1000;
-            const effluentLoad = (inputs.effluentConcentration * inputs.flowRate) / 1000;
-            const efficiency = influentLoad > 0 ? ((influentLoad - effluentLoad) / influentLoad) * 100 : 0;
-
-            document.getElementById('influentOrganicLoadResult').textContent = `${influentLoad.toFixed(2)} kg/dia`;
-            document.getElementById('effluentOrganicLoadResult').textContent = `${effluentLoad.toFixed(2)} kg/dia`;
-            document.getElementById('organicLoadEfficiencyResult').textContent = `${efficiency.toFixed(2)} %`;
-            document.getElementById('organicLoadResultDisplay').classList.remove('hidden');
-            return { ...inputs, influentLoad, effluentLoad, efficiency };
-        }
-
-
-        // --- DADOS E HISTÓRICO ---
-        async function saveData(collectionName, data) {
-            if (!db || !currentUserId) {
-                alert("A ligação à base de dados falhou. Não foi possível guardar."); return;
-            }
-            try {
-                await addDoc(collection(db, `artifacts/${appId}/users/${currentUserId}/${collectionName}`), { ...data, timestamp: new Date() });
-            } catch (e) {
-                console.error("Erro ao guardar: ", e);
-            }
-        }
-        
-        function loadAllHistories() {
-            if (!db || !currentUserId) return;
-            loadHistory('sludgeAgeCalculations', 'sludgeAgeHistory', ['ISR (dias)'], 
-                entry => `<td>${entry.calculatedISR.toFixed(2)}</td>`,
-                entry => {
-                    Object.keys(entry).forEach(key => {
-                        const el = document.getElementById({
-                            aerationTankVolume: 'aerationTankVolume',
-                            aerationTankVSS: 'aerationTankVSS',
-                            discardFlowRate: 'discardFlowRate',
-                            discardVSS: 'discardVSS',
-                            effluentFlowRate: 'effluentFlowRate',
-                            effluentVSS: 'effluentVSS'
-                        }[key]);
-                        if(el) el.value = entry[key];
-                    });
-                    calculateSludgeAge();
-                });
-            // ... Carregar outros históricos de forma semelhante
-        }
-
-        function loadHistory(collectionName, elementId, headers, dataRenderer, loadFunction) {
-            const q = query(collection(db, `artifacts/${appId}/users/${currentUserId}/${collectionName}`), orderBy("timestamp", "desc"));
-            onSnapshot(q, (snapshot) => {
-                const historyElement = document.getElementById(elementId);
-                const historyData = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-                
-                if (historyData.length === 0) {
-                    historyElement.innerHTML = `<p class="text-center text-sm text-slate-500 py-4">Nenhum histórico guardado.</p>`;
-                    return;
-                }
-
-                historyElement.innerHTML = `
-                    <h3 class="text-lg font-semibold text-slate-700 p-4 border-b border-slate-200">Histórico de Cálculos</h3>
-                    <div class="overflow-x-auto">
-                        <table class="min-w-full text-sm">
-                            <thead class="bg-slate-50 text-slate-600">
-                                <tr>
-                                    <th class="p-3 text-left font-semibold">Data</th>
-                                    ${headers.map(h => `<th class="p-3 text-left font-semibold">${h}</th>`).join('')}
-                                    <th class="p-3 text-right font-semibold">Ações</th>
-                                </tr>
-                            </thead>
-                            <tbody class="divide-y divide-slate-200">
-                                ${historyData.map(entry => `
-                                    <tr class="hover:bg-slate-50">
-                                        <td class="p-3 whitespace-nowrap">${new Date(entry.timestamp.toDate()).toLocaleString()}</td>
-                                        ${dataRenderer(entry)}
-                                        <td class="p-3 whitespace-nowrap text-right space-x-2">
-                                            <button data-id="${entry.id}" class="load-btn font-semibold text-blue-600 hover:text-blue-800">Carregar</button>
-                                            <button data-id="${entry.id}" class="delete-btn font-semibold text-red-600 hover:text-red-800">Excluir</button>
-                                        </td>
-                                    </tr>
-                                `).join('')}
-                            </tbody>
-                        </table>
-                    </div>
-                `;
-
-                historyElement.querySelectorAll('.load-btn').forEach(btn => btn.onclick = () => loadFunction(historyData.find(d => d.id === btn.dataset.id)));
-                historyElement.querySelectorAll('.delete-btn').forEach(btn => btn.onclick = async () => {
-                    if (confirm('Tem a certeza que deseja excluir este registo?')) {
-                        await deleteDoc(doc(db, `artifacts/${appId}/users/${currentUserId}/${collectionName}`, btn.dataset.id));
-                    }
-                });
-            });
-        }
-        
-        // --- EVENT LISTENERS ---
-        document.getElementById('calculateButton').addEventListener('click', calculateSludgeAge);
-        document.getElementById('saveSludgeAgeData').addEventListener('click', () => { const data = calculateSludgeAge(); if(data) saveData('sludgeAgeCalculations', data); });
-        document.getElementById('calculatePhysicalChemical').addEventListener('click', calculatePhysicalChemicalEfficiency);
-        document.getElementById('savePhysicalChemicalData').addEventListener('click', () => { const data = calculatePhysicalChemicalEfficiency(); if(data) saveData('physicalChemicalCalculations', data); });
-        document.getElementById('calculateOrganicLoadButton').addEventListener('click', calculateOrganicLoad);
-        document.getElementById('saveOrganicLoadData').addEventListener('click', () => { const data = calculateOrganicLoad(); if(data) saveData('organicLoadCalculations', data); });
-
-
-        // Inicialização
-        showSection('sludgeAgeSection');
-
-    </script>
+    <script src="script.js" type="module"></script>
 </body>
 </html>
