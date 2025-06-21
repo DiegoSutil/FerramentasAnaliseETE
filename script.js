@@ -18,9 +18,9 @@ let isFirebaseInitialized = false; // Flag para controlar a inicialização
 // Se quiser funcionalidade de DB no GitHub Pages, terá que colocar a sua firebaseConfig AQUI.
 const firebaseConfig = typeof window.__firebase_config !== 'undefined'
     ? JSON.parse(window.__firebase_config)
-    : null; // Se não estiver no ambiente Canvas, será null
+    : null; // Use null se não houver configuração injetada
 
-// O appId para as coleções do Firestore será o projectId da sua config Firebase
+// O appId para as coleções do Firestore será o projectId (se a config estiver disponível)
 const currentAppId = (firebaseConfig && firebaseConfig.projectId)
     ? firebaseConfig.projectId
     : 'default-app-id-github-pages'; // Fallback para GitHub Pages sem config
@@ -67,7 +67,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                     userIdDisplayElement.textContent = `ID do Usuário: ${currentUserId}`;
                 }
                 // Carregar histórico após autenticação e se Firebase estiver inicializado
-                if (currentUserId && isFirebaseInitialized) {
+                if (currentUserId && isFirebaseInitialized) { // Garante que o Firebase está pronto
                     window.loadSludgeAgeHistory(currentAppId);
                     window.loadPhysicalChemicalHistory(currentAppId);
                     window.loadOrganicLoadHistory(currentAppId);
@@ -75,7 +75,10 @@ document.addEventListener('DOMContentLoaded', async () => {
             });
         } catch (e) {
             console.error("Erro fatal ao inicializar Firebase SDK:", e);
-            document.getElementById('userIdDisplay').textContent = `ID do Usuário: Erro ao carregar o Firebase SDK.`;
+            const userIdDisplayElement = document.getElementById('userIdDisplay');
+            if (userIdDisplayElement) {
+                userIdDisplayElement.textContent = `ID do Usuário: Erro ao carregar o Firebase SDK.`;
+            }
             currentUserId = crypto.randomUUID(); // Fallback
             isFirebaseInitialized = false; // Garante que a flag esteja correta
         }
@@ -111,7 +114,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     window.saveData = async function(collectionName, data, appId) {
         console.log(`Tentando salvar dados na coleção: ${collectionName}`);
         if (!isFirebaseInitialized || !db || !currentUserId || !appId) {
-            console.error("ERRO: Firestore não inicializado ou dados do usuário/appId não disponíveis. Não foi possível salvar os dados.");
+            console.error("ERRO: Firestore não inicializado ou ID do usuário/appId não disponível. Não foi possível salvar os dados.");
             alert("Não foi possível salvar os dados. As funcionalidades de base de dados não estão ativas ou houve um erro de autenticação."); // Usar alert temporariamente para feedback
             return;
         }
@@ -249,16 +252,22 @@ document.addEventListener('DOMContentLoaded', async () => {
         });
     };
 
-    // Funções de Carregamento de Histórico para Cada Calculadora
     window.loadSludgeAgeHistory = function(appId) {
         console.log(`Chamando loadSludgeAgeHistory com appId: ${appId}`);
         window.setupHistoryListener('sludgeAgeCalculations', 'sludgeAgeHistory', (entry) => {
-            document.getElementById('aerationTankVolume').value = entry.aerationTankVolume || '';
-            document.getElementById('aerationTankVSS').value = entry.aerationTankVSS || '';
-            document.getElementById('discardFlowRate').value = entry.discardFlowRate || '';
-            document.getElementById('discardVSS').value = entry.discardVSS || '';
-            document.getElementById('effluentFlowRate').value = entry.effluentFlowRate || '';
-            document.getElementById('effluentVSS').value = entry.effluentVSS || '';
+            const aerationTankVolumeInput = document.getElementById('aerationTankVolume');
+            const aerationTankVSSInput = document.getElementById('aerationTankVSS');
+            const discardFlowRateInput = document.getElementById('discardFlowRate');
+            const discardVSSInput = document.getElementById('discardVSS');
+            const effluentFlowRateInput = document.getElementById('effluentFlowRate');
+            const effluentVSSInput = document.getElementById('effluentVSS');
+
+            if (aerationTankVolumeInput) aerationTankVolumeInput.value = entry.aerationTankVolume || '';
+            if (aerationTankVSSInput) aerationTankVSSInput.value = entry.aerationTankVSS || '';
+            if (discardFlowRateInput) discardFlowRateInput.value = entry.discardFlowRate || '';
+            if (discardVSSInput) discardVSSInput.value = entry.discardVSS || '';
+            if (effluentFlowRateInput) effluentFlowRateInput.value = entry.effluentFlowRate || '';
+            if (effluentVSSInput) effluentVSSInput.value = entry.effluentVSS || '';
             window.calculateSludgeAge();
         }, appId);
     };
@@ -266,13 +275,21 @@ document.addEventListener('DOMContentLoaded', async () => {
     window.loadPhysicalChemicalHistory = function(appId) {
         console.log(`Chamando loadPhysicalChemicalHistory com appId: ${appId}`);
         window.setupHistoryListener('physicalChemicalCalculations', 'physicalChemicalHistory', (entry) => {
-            document.getElementById('phyChemInitialTurbidity').value = entry.initialTurbidity || '';
-            document.getElementById('phyChemFinalTurbidity').value = entry.finalTurbidity || '';
-            document.getElementById('phyChemInitialColor').value = entry.initialColor || '';
-            document.getElementById('phyChemFinalColor').value = entry.finalColor || '';
-            document.getElementById('phyChemIdealDosage').value = entry.idealDosage || '';
-            document.getElementById('phyChemDosageUnit').value = entry.dosageUnit || 'mg/L';
-            document.getElementById('phyChemEtaFlowRate').value = entry.etaFlowRate || '';
+            const phyChemInitialTurbidityInput = document.getElementById('phyChemInitialTurbidity');
+            const phyChemFinalTurbidityInput = document.getElementById('phyChemFinalTurbidity');
+            const phyChemInitialColorInput = document.getElementById('phyChemInitialColor');
+            const phyChemFinalColorInput = document.getElementById('phyChemFinalColor');
+            const phyChemIdealDosageInput = document.getElementById('phyChemIdealDosage');
+            const phyChemDosageUnitSelect = document.getElementById('phyChemDosageUnit');
+            const phyChemEtaFlowRateInput = document.getElementById('phyChemEtaFlowRate');
+
+            if (phyChemInitialTurbidityInput) phyChemInitialTurbidityInput.value = entry.initialTurbidity || '';
+            if (phyChemFinalTurbidityInput) phyChemFinalTurbidityInput.value = entry.finalTurbidity || '';
+            if (phyChemInitialColorInput) phyChemInitialColorInput.value = entry.initialColor || '';
+            if (phyChemFinalColorInput) phyChemFinalColorInput.value = entry.finalColor || '';
+            if (phyChemIdealDosageInput) phyChemIdealDosageInput.value = entry.idealDosage || '';
+            if (phyChemDosageUnitSelect) phyChemDosageUnitSelect.value = entry.dosageUnit || 'mg/L';
+            if (phyChemEtaFlowRateInput) phyChemEtaFlowRateInput.value = entry.etaFlowRate || '';
             window.calculatePhysicalChemicalEfficiency();
         }, appId);
     };
@@ -280,9 +297,13 @@ document.addEventListener('DOMContentLoaded', async () => {
     window.loadOrganicLoadHistory = function(appId) {
         console.log(`Chamando loadOrganicLoadHistory com appId: ${appId}`);
         window.setupHistoryListener('organicLoadCalculations', 'organicLoadHistory', (entry) => {
-            document.getElementById('organicInfluentConcentration').value = entry.influentConcentration || '';
-            document.getElementById('organicEffluentConcentration').value = entry.effluentConcentration || '';
-            document.getElementById('organicLoadFlowRate').value = entry.flowRate || '';
+            const organicInfluentConcentrationInput = document.getElementById('organicInfluentConcentration');
+            const organicEffluentConcentrationInput = document.getElementById('organicEffluentConcentration');
+            const organicLoadFlowRateInput = document.getElementById('organicLoadFlowRate');
+
+            if (organicInfluentConcentrationInput) organicInfluentConcentrationInput.value = entry.influentConcentration || '';
+            if (organicEffluentConcentrationInput) organicEffluentConcentrationInput.value = entry.effluentConcentration || '';
+            if (organicLoadFlowRateInput) organicLoadFlowRateInput.value = entry.flowRate || '';
             window.calculateOrganicLoad();
         }, appId);
     };
@@ -405,7 +426,6 @@ document.addEventListener('DOMContentLoaded', async () => {
             if (turbidityEfficiencySpan) turbidityEfficiencySpan.textContent = '-- %';
             if (colorEfficiencySpan) colorEfficiencySpan.textContent = '-- %';
             if (dailyDosageSpan) dailyDosageSpan.textContent = '--';
-            console.log('Erro de validação em calculatePhysicalChemicalEfficiency.');
             return;
         }
 
@@ -414,7 +434,6 @@ document.addEventListener('DOMContentLoaded', async () => {
                 errorMessageDiv.textContent = 'A turbidez final não pode ser maior que a turbidez inicial.';
                 errorMessageDiv.classList.remove('hidden');
             }
-            console.log('Erro: Turbidez final > inicial em calculatePhysicalChemicalEfficiency.');
             return;
         }
         if (finalColor > initialColor) {
@@ -422,7 +441,6 @@ document.addEventListener('DOMContentLoaded', async () => {
                 errorMessageDiv.textContent = 'A cor final não pode ser maior que a cor inicial.';
                 errorMessageDiv.classList.remove('hidden');
             }
-            console.log('Erro: Cor final > inicial em calculatePhysicalChemicalEfficiency.');
             return;
         }
 
@@ -459,7 +477,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (dailyDosageSpan) dailyDosageSpan.classList.add(window.getResultColorClass(0, 'dosage'));
 
         if (resultDisplayDiv) resultDisplayDiv.classList.remove('hidden');
-        console.log('calculatePhysicalChemicalEfficiency concluído com sucesso.');
 
         const dataToSave = {
             initialTurbidity, finalTurbidity, initialColor, finalColor,
@@ -470,7 +487,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     };
 
     window.calculateOrganicLoad = async function() {
-        console.log('calculateOrganicLoad executado.');
         const influentConcentrationInput = document.getElementById('organicInfluentConcentration');
         const effluentConcentrationInput = document.getElementById('organicEffluentConcentration');
         const flowRateInput = document.getElementById('organicLoadFlowRate');
@@ -504,7 +520,6 @@ document.addEventListener('DOMContentLoaded', async () => {
                 errorMessageDiv.textContent = 'Por favor, preencha todos os campos com valores numéricos válidos e não negativos.';
                 errorMessageDiv.classList.remove('hidden');
             }
-            console.log('Erro de validação em calculateOrganicLoad.');
             return;
         }
 
@@ -513,7 +528,6 @@ document.addEventListener('DOMContentLoaded', async () => {
                 errorMessageDiv.textContent = 'A concentração efluente não pode ser maior que a concentração afluente.';
                 errorMessageDiv.classList.remove('hidden');
             }
-            console.log('Erro: Concentração efluente > afluente em calculateOrganicLoad.');
             return;
         }
 
@@ -534,7 +548,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (effluentLoadSpan) effluentLoadSpan.classList.add(window.getResultColorClass(0, 'organicLoad'));
 
         if (resultDisplayDiv) resultDisplayDiv.classList.remove('hidden');
-        console.log('calculateOrganicLoad concluído com sucesso. Eficiência:', efficiency);
 
         const dataToSave = {
             influentConcentration, effluentConcentration, flowRate,
@@ -558,7 +571,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             targetSection.classList.remove('hidden-section');
             console.log(`Seção '${sectionId}' mostrada.`);
         } else {
-            console.warn(`Seção com ID '${sectionId}' não encontrada no DOM.`);
+            console.warn(`Seção com ID '${sectionId}' não encontrada.`);
             return;
         }
 
@@ -610,6 +623,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             console.log('saveSludgeAgeData clicked');
             const data = await window.calculateSludgeAge();
             if (data) {
+                // currentAppId deve ser acessível aqui do escopo superior
                 await window.saveData('sludgeAgeCalculations', data, currentAppId);
             }
         });
@@ -618,7 +632,8 @@ document.addEventListener('DOMContentLoaded', async () => {
             console.log('savePhysicalChemicalData clicked');
             const data = await window.calculatePhysicalChemicalEfficiency();
             if (data) {
-                await window.saveData('physicalChemicalCalculations', data, currentAppId);
+                const currentAppIdValue = firebaseConfig && firebaseConfig.projectId ? firebaseConfig.projectId : 'default-app-id-github-pages';
+                await window.saveData('physicalChemicalCalculations', data, currentAppIdValue);
             }
         });
 
@@ -626,7 +641,8 @@ document.addEventListener('DOMContentLoaded', async () => {
             console.log('saveOrganicLoadData clicked');
             const data = await window.calculateOrganicLoad();
             if (data) {
-                await window.saveData('organicLoadCalculations', data, currentAppId);
+                const currentAppIdValue = firebaseConfig && firebaseConfig.projectId ? firebaseConfig.projectId : 'default-app-id-github-pages';
+                await window.saveData('organicLoadCalculations', data, currentAppIdValue);
             }
         });
 
@@ -687,154 +703,182 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     // Limpar os campos de entrada ao carregar a página
     const clearAllInputs = () => {
-        document.getElementById('aerationTankVolume')?.value = '';
-        document.getElementById('aerationTankVSS')?.value = '';
-        document.getElementById('discardFlowRate')?.value = '';
-        document.getElementById('discardVSS')?.value = '';
-        document.getElementById('effluentFlowRate')?.value = '';
-        document.getElementById('effluentVSS')?.value = '';
+        const aerationTankVolumeInput = document.getElementById('aerationTankVolume');
+        const aerationTankVSSInput = document.getElementById('aerationTankVSS');
+        const discardFlowRateInput = document.getElementById('discardFlowRate');
+        const discardVSSInput = document.getElementById('discardVSS');
+        const effluentFlowRateInput = document.getElementById('effluentFlowRate');
+        const effluentVSSInput = document.getElementById('effluentVSS');
 
-        document.getElementById('phyChemInitialTurbidity')?.value = '';
-        document.getElementById('phyChemFinalTurbidity')?.value = '';
-        document.getElementById('phyChemInitialColor')?.value = '';
-        document.getElementById('phyChemFinalColor')?.value = '';
-        document.getElementById('phyChemIdealDosage')?.value = '';
-        document.getElementById('phyChemEtaFlowRate')?.value = '';
+        if (aerationTankVolumeInput) aerationTankVolumeInput.value = '';
+        if (aerationTankVSSInput) aerationTankVSSInput.value = '';
+        if (discardFlowRateInput) discardFlowRateInput.value = '';
+        if (discardVSSInput) discardVSSInput.value = '';
+        if (effluentFlowRateInput) effluentFlowRateInput.value = '';
+        if (effluentVSSInput) effluentVSSInput.value = '';
 
-        document.getElementById('organicInfluentConcentration')?.value = '';
-        document.getElementById('organicEffluentConcentration')?.value = '';
-        document.getElementById('organicLoadFlowRate')?.value = '';
+        const phyChemInitialTurbidityInput = document.getElementById('phyChemInitialTurbidity');
+        const phyChemFinalTurbidityInput = document.getElementById('phyChemFinalTurbidity');
+        const phyChemInitialColorInput = document.getElementById('phyChemInitialColor');
+        const phyChemFinalColorInput = document.getElementById('phyChemFinalColor');
+        const phyChemIdealDosageInput = document.getElementById('phyChemIdealDosage');
+        const phyChemEtaFlowRateInput = document.getElementById('phyChemEtaFlowRate');
+
+        if (phyChemInitialTurbidityInput) phyChemInitialTurbidityInput.value = '';
+        if (phyChemFinalTurbidityInput) phyChemFinalTurbidityInput.value = '';
+        if (phyChemInitialColorInput) phyChemInitialColorInput.value = '';
+        if (phyChemFinalColorInput) phyChemFinalColorInput.value = '';
+        if (phyChemIdealDosageInput) phyChemIdealDosageInput.value = '';
+        if (phyChemEtaFlowRateInput) phyChemEtaFlowRateInput.value = '';
+
+        const organicInfluentConcentrationInput = document.getElementById('organicInfluentConcentration');
+        const organicEffluentConcentrationInput = document.getElementById('organicEffluentConcentration');
+        const organicLoadFlowRateInput = document.getElementById('organicLoadFlowRate');
+
+        if (organicInfluentConcentrationInput) organicInfluentConcentrationInput.value = '';
+        if (organicEffluentConcentrationInput) organicEffluentConcentrationInput.value = '';
+        if (organicLoadFlowRateInput) organicLoadFlowRateInput.value = '';
         console.log('Todos os campos de input limpos.');
     };
-    clearAllInputs(); // Limpa inputs no carregamento inicial
 
-    // Definir a seção inicial (pode ser a idade do lodo ou como funciona)
-    window.showSection('sludgeAgeSection'); // Inicia mostrando a primeira seção
+    // Funções de parsing CSV (mantidas no âmbito global)
+    window.parseCSVAndFillFields = function(file) {
+        console.log('parseCSVAndFillFields executado.');
+        const statusDisplay = document.getElementById('csvAnalysisStatus');
+        const tableDisplay = document.getElementById('csvTableDisplay');
 
-    // Adicionar todos os event listeners
-    addEventListeners();
-});
+        if (statusDisplay) statusDisplay.textContent = '';
+        if (tableDisplay) tableDisplay.innerHTML = '';
 
-// Funções de parsing CSV (mantidas no âmbito global)
-window.parseCSVAndFillFields = function(file) {
-    console.log('parseCSVAndFillFields executado.');
-    const statusDisplay = document.getElementById('csvAnalysisStatus');
-    const tableDisplay = document.getElementById('csvTableDisplay');
+        const aerationTankVolumeInput = document.getElementById('aerationTankVolume');
+        const aerationTankVSSInput = document.getElementById('aerationTankVSS');
+        const discardFlowRateInput = document.getElementById('discardFlowRate');
+        const discardVSSInput = document.getElementById('discardVSS');
+        const effluentFlowRateInput = document.getElementById('effluentFlowRate');
+        const effluentVSSInput = document.getElementById('effluentVSS');
 
-    if (statusDisplay) statusDisplay.textContent = '';
-    if (tableDisplay) tableDisplay.innerHTML = '';
+        if (aerationTankVolumeInput) aerationTankVolumeInput.value = '';
+        if (aerationTankVSSInput) aerationTankVSSInput.value = '';
+        if (discardFlowRateInput) discardFlowRateInput.value = '';
+        if (discardVSSInput) discardVSSInput.value = '';
+        if (effluentFlowRateInput) effluentFlowRateInput.value = '';
+        if (effluentVSSInput) effluentVSSInput.value = '';
 
-    document.getElementById('aerationTankVolume')?.value = '';
-    document.getElementById('aerationTankVSS')?.value = '';
-    document.getElementById('discardFlowRate')?.value = '';
-    document.getElementById('discardVSS')?.value = '';
-    document.getElementById('effluentFlowRate')?.value = '';
-    document.getElementById('effluentVSS')?.value = '';
-
-
-    if (!file) {
-        if (statusDisplay) statusDisplay.textContent = 'Nenhum arquivo selecionado.';
-        return;
-    }
-
-    const reader = new FileReader();
-    reader.onload = function(e) {
-        const text = e.target.result;
-        const lines = text.split(/\r\n|\n/).map(line => line.trim()).filter(line => line.length > 0);
-
-        if (lines.length === 0) {
-            if (statusDisplay) statusDisplay.textContent = 'Arquivo CSV vazio ou ilegível.';
+        if (!file) {
+            if (statusDisplay) statusDisplay.textContent = 'Nenhum arquivo selecionado.';
             return;
         }
 
-        const headers = lines[0].split(';').map(h => h.trim());
-        const dataRows = lines.slice(1);
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const text = e.target.result;
+            const lines = text.split(/\r\n|\n/).map(line => line.trim()).filter(line => line.length > 0);
 
-        let tableHtml = `<table class="min-w-full divide-y divide-gray-200"><thead><tr>`;
-        headers.forEach(header => {
-            tableHtml += `<th class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">${header}</th>`;
-        });
-        tableHtml += '</tr></thead><tbody class="bg-white divide-y divide-gray-200">';
-        dataRows.forEach(row => {
-            const values = row.split(';').map(v => v.trim());
-            tableHtml += '<tr>';
-            values.forEach(value => {
-                tableHtml += `<td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${value}</td>`;
+            if (lines.length === 0) {
+                if (statusDisplay) statusDisplay.textContent = 'Arquivo CSV vazio ou ilegível.';
+                return;
+            }
+
+            const headers = lines[0].split(';').map(h => h.trim());
+            const dataRows = lines.slice(1);
+
+            let tableHtml = `<table class="min-w-full divide-y divide-gray-200"><thead><tr>`;
+            headers.forEach(header => {
+                tableHtml += `<th class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">${header}</th>`;
             });
-            tableHtml += '</tr>';
-        });
-        tableHtml += '</tbody></table>';
-        if (tableDisplay) tableDisplay.innerHTML = tableHtml;
+            tableHtml += '</tr></thead><tbody class="bg-white divide-y divide-gray-200">';
+            dataRows.forEach(row => {
+                const values = row.split(';').map(v => v.trim());
+                tableHtml += '<tr>';
+                values.forEach(value => {
+                    tableHtml += `<td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${value}</td>`;
+                });
+                tableHtml += '</tr>';
+            });
+            tableHtml += '</tbody></table>';
+            if (tableDisplay) tableDisplay.innerHTML = tableHtml;
 
-        let aerationTankVSSValues = [];
-        let discardVSSValues = [];
-        let effluentVSSValue = null;
+            let aerationTankVSSValues = [];
+            let discardVSSValues = [];
+            let effluentVSSValue = null;
 
-        const tanqueIndex = headers.indexOf('Tanque');
-        const solidosVolateisIndex = headers.indexOf('Sólidos Voláteis mg/l');
+            const tanqueIndex = headers.indexOf('Tanque');
+            const solidosVolateisIndex = headers.indexOf('Sólidos Voláteis mg/l');
 
-        if (tanqueIndex === -1 || solidosVolateisIndex === -1) {
-            if (statusDisplay) statusDisplay.textContent = 'CSV inválido: colunas "Tanque" ou "Sólidos Voláteis mg/l" não encontradas. Verifique os cabeçalhos.';
-            return;
-        }
-
-        dataRows.forEach((row, rowIndex) => {
-            const values = row.split(';').map(v => v.trim());
-            if (values.length <= Math.max(tanqueIndex, solidosVolateisIndex)) {
-                console.warn(`Linha ${rowIndex + 2} ignorada devido a colunas insuficientes: "${row}"`);
+            if (tanqueIndex === -1 || solidosVolateisIndex === -1) {
+                if (statusDisplay) statusDisplay.textContent = 'CSV inválido: colunas "Tanque" ou "Sólidos Voláteis mg/l" não encontradas. Verifique os cabeçalhos.';
                 return;
             }
 
-            const tanque = values[tanqueIndex];
-            const ssvString = values[solidosVolateisIndex].replace(',', '.');
-            const ssv = parseFloat(ssvString);
+            dataRows.forEach((row, rowIndex) => {
+                const values = row.split(';').map(v => v.trim());
+                if (values.length <= Math.max(tanqueIndex, solidosVolateisIndex)) {
+                    console.warn(`Linha ${rowIndex + 2} ignorada devido a colunas insuficientes: "${row}"`);
+                    return;
+                }
 
-            if (isNaN(ssv)) {
-                console.warn(`Linha ${rowIndex + 2}: Valor de SSV inválido "${values[solidosVolateisIndex]}" para o tanque "${tanque}".`);
-                return;
+                const tanque = values[tanqueIndex];
+                const ssvString = values[solidosVolateisIndex].replace(',', '.');
+                const ssv = parseFloat(ssvString);
+
+                if (isNaN(ssv)) {
+                    console.warn(`Linha ${rowIndex + 2}: Valor de SSV inválido "${values[solidosVolateisIndex]}" para o tanque "${tanque}".`);
+                    return;
+                }
+
+                if (tanque && tanque.includes('Tanque de aeração')) {
+                    aerationTankVSSValues.push(ssv);
+                } else if (tanque && tanque.includes('Reciclo')) {
+                    discardVSSValues.push(ssv);
+                } else if (tanque && tanque.includes('Decantador secundário')) {
+                    effluentVSSValue = ssv;
+                }
+            });
+
+            let warnings = [];
+
+            if (aerationTankVSSValues.length > 0) {
+                const avgAerationTankVSS = aerationTankVSSValues.reduce((sum, val) => sum + val, 0) / aerationTankVSSValues.length;
+                document.getElementById('aerationTankVSS').value = avgAerationTankVSS.toFixed(2);
+            } else {
+                warnings.push(' "SSV no Tanque de Aeração" não encontrado ou inválido no CSV.');
             }
 
-            if (tanque && tanque.includes('Tanque de aeração')) {
-                aerationTankVSSValues.push(ssv);
-            } else if (tanque && tanque.includes('Reciclo')) {
-                discardVSSValues.push(ssv);
-            } else if (tanque && tanque.includes('Decantador secundário')) {
-                effluentVSSValue = ssv;
+            if (discardVSSValues.length > 0) {
+                const avgDiscardVSS = discardVSSValues.reduce((sum, val) => sum + val, 0) / discardVSSValues.length;
+                document.getElementById('discardVSS').value = avgDiscardVSS.toFixed(2);
+            } else {
+                warnings.push(' "SSV do Lodo Descartado" (Reciclo) não encontrado ou inválido no CSV.');
             }
-        });
 
-        let warnings = [];
+            if (effluentVSSValue !== null) {
+                document.getElementById('effluentVSS').value = effluentVSSValue.toFixed(2);
+            } else {
+                warnings.push(' "SSV do Efluente Final" (Decantador secundário) não encontrado ou inválido no CSV.');
+            }
 
-        if (aerationTankVSSValues.length > 0) {
-            const avgAerationTankVSS = aerationTankVSSValues.reduce((sum, val) => sum + val, 0) / aerationTankVSSValues.length;
-            document.getElementById('aerationTankVSS').value = avgAerationTankVSS.toFixed(2);
-        } else {
-            warnings.push(' "SSV no Tanque de Aeração" não encontrado ou inválido no CSV.');
-        }
+            if (warnings.length > 0) {
+                if (statusDisplay) statusDisplay.textContent = 'Análise do CSV concluída com avisos: ' + warnings.join('');
+            } else {
+                if (statusDisplay) statusDisplay.textContent = 'Dados do CSV analisados e campos preenchidos com sucesso!';
+            }
+        };
 
-        if (discardVSSValues.length > 0) {
-            const avgDiscardVSS = discardVSSValues.reduce((sum, val) => sum + val, 0) / discardVSSValues.length;
-            document.getElementById('discardVSS').value = avgDiscardVSS.toFixed(2);
-        } else {
-            warnings.push(' "SSV do Lodo Descartado" (Reciclo) não encontrado ou inválido no CSV.');
-        }
+        reader.onerror = function() {
+            if (statusDisplay) statusDisplay.textContent = 'Erro ao ler o arquivo CSV. Verifique o formato e o delimitador (ponto e vírgula).';
+        };
 
-        if (effluentVSSValue !== null) {
-            document.getElementById('effluentVSS').value = effluentVSSValue.toFixed(2);
-        } else {
-            warnings.push(' "SSV do Efluente Final" (Decantador secundário) não encontrado ou inválido no CSV.');
-        }
-
-        if (warnings.length > 0) {
-            if (statusDisplay) statusDisplay.textContent = 'Análise do CSV concluída com avisos: ' + warnings.join('');
-        } else {
-            if (statusDisplay) statusDisplay.textContent = 'Dados do CSV analisados e campos preenchidos com sucesso!';
-        }
+        reader.readAsText(file);
     };
 
-    reader.onerror = function() {
-        if (statusDisplay) statusDisplay.textContent = 'Erro ao ler o arquivo CSV. Verifique o formato e o delimitador (ponto e vírgula).';
-    };
+    // Evento DOMContentLoaded para inicializar o setup
+    document.addEventListener('DOMContentLoaded', () => {
+        // Limpar os campos de entrada ao carregar a página
+        clearAllInputs();
 
-    reader.readAsText(file);
-};
+        // Definir a seção inicial (pode ser a idade do lodo ou como funciona)
+        window.showSection('sludgeAgeSection');
+
+        // Adicionar todos os event listeners
+        addEventListeners();
+    });
