@@ -16,7 +16,6 @@ body {
 }
 /* Estilos gerais para inputs e selects para consistência */
 input[type="number"], select {
-    /* Increased padding, rounded-lg, added text-gray-800 */
     padding: 12px; /* Increased from p-3 */
     border-radius: 8px; /* Slightly more rounded */
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08); /* Subtle shadow for depth */
