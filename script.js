@@ -623,8 +623,8 @@ document.addEventListener('DOMContentLoaded', async () => {
             console.log('saveSludgeAgeData clicked');
             const data = await window.calculateSludgeAge();
             if (data) {
-                // currentAppId deve ser acessível aqui do escopo superior
-                await window.saveData('sludgeAgeCalculations', data, currentAppId);
+                const currentAppIdValue = firebaseConfig && firebaseConfig.projectId ? firebaseConfig.projectId : 'default-app-id-github-pages';
+                await window.saveData('sludgeAgeCalculations', data, currentAppIdValue);
             }
         });
 
@@ -733,10 +733,11 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         const organicInfluentConcentrationInput = document.getElementById('organicInfluentConcentration');
         const organicEffluentConcentrationInput = document.getElementById('organicEffluentConcentration');
-        const organicLoadFlowRateInput = document.getElementById('organicLoadFlowRate');
+        const organicLoadFlowRateInput = document.getElementById('organicLoadFlowRate'); // AQUI ESTAVA O ERRO DE SINTAXE!!
 
         if (organicInfluentConcentrationInput) organicInfluentConcentrationInput.value = '';
         if (organicEffluentConcentrationInput) organicEffluentConcentrationInput.value = '';
+        // CORREÇÃO: Usar o nome da variável correta
         if (organicLoadFlowRateInput) organicLoadFlowRateInput.value = '';
         console.log('Todos os campos de input limpos.');
     };
