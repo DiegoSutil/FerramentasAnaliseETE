@@ -41,7 +41,7 @@ label {
     display: block; /* Ensure it takes full width */
 }
 
-/* Classes para indicadores visuais */
+/* Classes para indicadores visuales */
 .result-positive {
     color: #10B981; /* green-500 */
 }
