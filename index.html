@@ -1,247 +1,2937 @@
 <!DOCTYPE html>
+
 <html lang="pt-BR">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Calculadora de Idade do Lodo - Braspine Telêmaco Borba</title>
-    <!-- Inclui Tailwind CSS via CDN para estilização rápida e responsiva -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Link para a fonte Inter do Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
-    <style>
-        body {
-            font-family: 'Inter', sans-serif; /* Define a fonte Inter para todo o corpo */
-        }
-    </style>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Calculadora de Idade do Lodo / Eficiência Físico-Química - Braspine Telêmaco Borba</title>
+
+    <!-- Inclui Tailwind CSS via CDN para estilização rápida e responsiva -->
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Link para a fonte Inter do Google Fonts -->
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+    
+
+    <style>
+
+        /* CSS INLINE AQUI */
+
+        body {
+
+            font-family: 'Inter', sans-serif; /* Define a fonte Inter para todo o corpo */
+
+        }
+
+        .drop-zone {
+
+            border: 2px dashed #a7f3d0; /* default border */
+
+            background-color: #f0fdf4; /* default background */
+
+            transition: all 0.2s ease-in-out;
+
+        }
+
+        .drop-zone.drag-over {
+
+            border-color: #10b981; /* green-500 */
+
+            background-color: #d1fae5; /* green-100 */
+
+        }
+
+        /* Estilos para ocultar/mostrar seções */
+
+        .hidden-section {
+
+            display: none;
+
+        }
+
+        /* Estilos gerais para inputs e selects para consistência */
+
+        input[type="number"], select {
+
+            padding: 12px; /* Increased from p-3 */
+
+            border-radius: 8px; /* Slightly more rounded */
+
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08); /* Subtle shadow for depth */
+
+            border: 1px solid #d1d5db; /* A default border color for consistency */
+
+            color: #1f2937; /* Darker text color for inputs */
+
+            width: 100%; /* Ensure full width */
+
+        }
+
+
+
+        input[type="number"]::placeholder { /* Style for placeholder text */
+
+            color: #9ca3af; /* A lighter gray for placeholders */
+
+        }
+
+
+
+        input[type="number"]:focus, select:focus {
+
+            outline: none;
+
+            border-color: #4CAF50; /* Green focus color */
+
+            box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.3), 0 2px 5px rgba(0, 0, 0, 0.15); /* More pronounced shadow on focus */
+
+        }
+
+        label {
+
+            font-size: 0.875rem; /* text-sm */
+
+            font-weight: 500; /* font-medium */
+
+            color: #3C5A3C; /* Darker green for labels */
+
+            margin-bottom: 0.25rem; /* mb-1 */
+
+            display: block; /* Ensure it takes full width */
+
+        }
+
+
+
+        /* Classes para indicadores visuais */
+
+        .result-positive {
+
+            color: #10B981; /* green-500 */
+
+        }
+
+        .result-warning {
+
+            color: #F59E0B; /* yellow-500 */
+
+        }
+
+        .result-negative {
+
+            color: #EF4444; /* red-500 */
+
+        }
+
+
+
+        /* General Flexbox and Grid gaps for consistency as they are used throughout */
+
+        .flex-col {
+
+            display: flex;
+
+            flex-direction: column;
+
+        }
+
+        .grid {
+
+            display: grid;
+
+        }
+
+        .gap-6 {
+
+            gap: 1.5rem; /* 24px */
+
+        }
+
+        .mb-8 {
+
+            margin-bottom: 2rem; /* 32px */
+
+        }
+
+        .px-4 {
+
+            padding-left: 1rem;
+
+            padding-right: 1rem;
+
+        }
+
+        .py-2 {
+
+            padding-top: 0.5rem;
+
+            padding-bottom: 0.5rem;
+
+        }
+
+        .rounded-lg {
+
+            border-radius: 0.5rem;
+
+        }
+
+        .font-bold {
+
+            font-weight: 700;
+
+        }
+
+        .shadow-md {
+
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+
+        }
+
+        .transition {
+
+            transition-property: background-color, border-color, color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter;
+
+            transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+
+            transition-duration: 150ms;
+
+        }
+
+        .ease-in-out {
+
+            transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+
+        }
+
+        .hover\:scale-105:hover {
+
+            --tw-scale-x: 1.05;
+
+            --tw-scale-y: 1.05;
+
+            transform: scale(1.05);
+
+        }
+
+    </style>
+
 </head>
+
 <body class="min-h-screen bg-gradient-to-br from-green-100 to-green-300 flex items-center justify-center p-4">
-    <div class="bg-white p-8 rounded-2xl shadow-xl w-full max-w-2xl border border-gray-200">
-        <!-- Logo da Braspine -->
-        <div class="flex justify-center mb-6">
-            <img
-                src="https://github.com/DiegoSutil/calculadora-de-lodo/blob/e6af6bb6071166eb8a6dfd01725ad76460471786/images/logo_braspine_horizontal_positivo_cor_rgb.png?raw=true"
-                alt="Logo Braspine"
-                class="h-12 object-contain rounded-md"
-            />
-        </div>
-        <h1 class="text-3xl font-bold text-center text-gray-800 mb-2">
-            Calculadora de Idade do Lodo
-        </h1>
-        <h2 class="text-xl text-center text-gray-600 mb-8">
-            ETE/ETAR
-        </h2>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-            <!-- Volume do Tanque de Aeração -->
-            <div class="flex flex-col">
-                <label for="aerationTankVolume" class="text-sm font-medium text-gray-700 mb-1">
-                    Volume do Tanque de Aeração (m³)
-                </label>
-                <input
-                    type="number"
-                    id="aerationTankVolume"
-                    class="p-2 border border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500 transition duration-150 ease-in-out"
-                    placeholder="Ex: 500"
-                    value="200"
-                />
-            </div>
+    <div class="bg-white p-8 rounded-2xl shadow-xl w-full max-w-4xl border border-gray-200">
 
-            <!-- SSV no Tanque de Aeração -->
-            <div class="flex flex-col">
-                <label for="aerationTankVSS" class="text-sm font-medium text-gray-700 mb-1">
-                    SSV no Tanque de Aeração (mg/L)
-                </label>
-                <input
-                    type="number"
-                    id="aerationTankVSS"
-                    class="p-2 border border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500 transition duration-150 ease-in-out"
-                    placeholder="Ex: 3000"
-                    value="5500"
-                />
-            </div>
+        <!-- Logo da Braspine -->
 
-            <!-- Vazão de Descarte -->
-            <div class="flex flex-col">
-                <label for="discardFlowRate" class="text-sm font-medium text-gray-700 mb-1">
-                    Vazão de Descarte (L/min) - (Considerando 3 descartes de 10 min)
-                </label>
-                <input
-                    type="number"
-                    id="discardFlowRate"
-                    class="p-2 border border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500 transition duration-150 ease-in-out"
-                    placeholder="Ex: 50"
-                    value="1000"
-                />
-            </div>
+        <div class="flex justify-center mb-6">
 
-            <!-- SSV do Lodo Descartado -->
-            <div class="flex flex-col">
-                <label for="discardVSS" class="text-sm font-medium text-gray-700 mb-1">
-                    SSV do Lodo Descartado (mg/L)
-                </label>
-                <input
-                    type="number"
-                    id="discardVSS"
-                    class="p-2 border border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500 transition duration-150 ease-in-out"
-                    placeholder="Ex: 8000"
-                    value="10500"
-                />
-            </div>
+            <img
 
-            <!-- Vazão do Efluente Final -->
-            <div class="flex flex-col">
-                <label for="effluentFlowRate" class="text-sm font-medium text-gray-700 mb-1">
-                    Vazão do Efluente Final (m³/dia)
-                </label>
-                <input
-                    type="number"
-                    id="effluentFlowRate"
-                    class="p-2 border border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500 transition duration-150 ease-in-out"
-                    placeholder="Ex: 400"
-                    value=""
-                />
-            </div>
+                src="https://github.com/DiegoSutil/calculadora-de-lodo/blob/e6af6bb6071166eb8a6dfd01725ad76460471786/images/logo_braspine_horizontal_positivo_cor_rgb.png?raw=true"
 
-            <!-- SSV do Efluente Final -->
-            <div class="flex flex-col">
-                <label for="effluentVSS" class="text-sm font-medium text-gray-700 mb-1">
-                    SSV do Efluente Final (mg/L)
-                </label>
-                <input
-                    type="number"
-                    id="effluentVSS"
-                    class="p-2 border border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500 transition duration-150 ease-in-out"
-                    placeholder="Ex: 20"
-                    value="20"
-                />
-            </div>
-        </div>
+                alt="Logo Braspine"
 
-        <!-- Botão de Cálculo -->
-        <button
-            id="calculateButton"
-            class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-4 rounded-lg shadow-md transition duration-200 ease-in-out transform hover:scale-105"
-        >
-            Calcular Idade do Lodo
-        </button>
+                class="h-12 object-contain rounded-md"
 
-        <!-- Área de Resultado/Erro -->
-        <div id="errorDisplay" class="mt-6 p-3 bg-red-100 border border-red-400 text-red-700 rounded-md text-center hidden"></div>
-        <div id="resultDisplay" class="mt-6 p-4 bg-green-100 border border-green-400 text-green-700 rounded-md text-center hidden">
-            <h2 class="text-lg font-semibold">Idade do Lodo Calculada:</h2>
-            <p id="sludgeAgeResult" class="text-2xl font-bold mt-2"></p>
-        </div>
+            />
 
-        <div class="mt-8 text-sm text-gray-600 text-center">
-            <p>
-                A Idade do Lodo (ISR) é um parâmetro fundamental no controle de sistemas de lodos ativados,
-                indicando o tempo médio de permanência dos sólidos voláteis no sistema.
-            </p>
-            <p class="mt-2 font-bold">
-                Fórmula utilizada:
-            </p>
-            <p class="mt-1">
-                ISR = (Massa de SSV no Tanque de Aeração) / (Massa de SSV Removida Diariamente)
-            </p>
-            <p class="mt-1 text-xs text-gray-500">
-                Onde:
-            </p>
-            <p class="mt-1 text-xs text-gray-500">
-                Massa de SSV no Tanque = Volume do Tanque (m³) * SSV do Tanque (mg/L)
-            </p>
-            <p class="mt-1 text-xs text-gray-500">
-                Massa de SSV Removida = (Vazão de Descarte (L/dia) * SSV Descartado (mg/L)) + (Vazão do Efluente (L/dia) * SSV do Efluente (mg/L))
-            </p>
-            <p class="mt-2 font-bold text-green-700">
-                Dias ideais para a Idade do Lodo: Geralmente entre 5 e 15 dias.
-            </p>
-            <p class="mt-1 text-xs text-gray-500">
-                (Este valor pode variar dependendo do tipo de processo e da qualidade da água a ser tratada)
-            </p>
-            <p class="mt-4 text-xs text-gray-500">
-                Desenvolvido por Diego Machado Sutil
-            </p>
-        </div>
-    </div>
+        </div>
 
-    <script>
-        // Função para calcular a idade do lodo
-        function calculateSludgeAge() {
-            // Obter referências aos elementos de entrada
-            const aerationTankVolumeInput = document.getElementById('aerationTankVolume');
-            const aerationTankVSSInput = document.getElementById('aerationTankVSS');
-            const discardFlowRateInput = document.getElementById('discardFlowRate');
-            const discardVSSInput = document.getElementById('discardVSS');
-            const effluentFlowRateInput = document.getElementById('effluentFlowRate');
-            const effluentVSSInput = document.getElementById('effluentVSS');
+        <h1 class="text-3xl font-bold text-center text-gray-800 mb-2">
 
-            // Obter referências aos elementos de exibição de resultados e erros
-            const errorDisplay = document.getElementById('errorDisplay');
-            const resultDisplay = document.getElementById('resultDisplay');
-            const sludgeAgeResult = document.getElementById('sludgeAgeResult');
+            Ferramentas de Análise ETE/ETAR
 
-            // Limpar mensagens de erro e resultados anteriores
-            errorDisplay.classList.add('hidden');
-            resultDisplay.classList.add('hidden');
-            errorDisplay.textContent = '';
-            sludgeAgeResult.textContent = '';
+        </h1>
 
-            // Converter valores de entrada para números
-            const inputs = {
-                aerationTankVolume: parseFloat(aerationTankVolumeInput.value),
-                aerationTankVSS: parseFloat(aerationTankVSSInput.value),
-                discardFlowRate: parseFloat(discardFlowRateInput.value),
-                discardVSS: parseFloat(discardVSSInput.value),
-                effluentFlowRate: parseFloat(effluentFlowRateInput.value),
-                effluentVSS: parseFloat(effluentVSSInput.value),
-            };
+        <h2 class="text-xl text-center text-gray-600 mb-8">
 
-            // Validar se todos os campos estão preenchidos e são números válidos
-            for (const key in inputs) {
-                if (isNaN(inputs[key]) || inputs[key] < 0) {
-                    errorDisplay.textContent = 'Por favor, preencha todos os campos com valores numéricos positivos válidos.';
-                    errorDisplay.classList.remove('hidden');
-                    return;
-                }
-            }
+            <!-- Removido: Braspine Telêmaco Borba -->
 
-            // Converter unidades para cálculos consistentes (todos em Litros e mg)
-            const V_aerationTank_L = inputs.aerationTankVolume * 1000; // m³ para Litros
-            const Q_effluent_L_day = inputs.effluentFlowRate * 1000; // m³/dia para Litros/dia
+        </h2>
 
-            // Dados de descarte: 3 descartes por dia, 10 minutos cada
-            const totalDailyDiscardMinutes = 3 * 10; // 30 minutos por dia
-            const Q_discard_L_day = inputs.discardFlowRate * totalDailyDiscardMinutes; // L/min para L/dia
 
-            // Cálculo da massa total de SSV no tanque de aeração (mg)
-            const totalVSSMassAerationTank = V_aerationTank_L * inputs.aerationTankVSS;
 
-            // Cálculo da massa de SSV descartada por dia (mg/dia)
-            const totalVSSMassDiscardedDaily = Q_discard_L_day * inputs.discardVSS;
+        <!-- Removido: ID do Usuário -->
 
-            // Cálculo da massa de SSV no efluente por dia (mg/dia)
-            const totalVSSMassInEffluentDaily = Q_effluent_L_day * inputs.effluentVSS;
 
-            // Denominador da fórmula da Idade do Lodo
-            const denominator = totalVSSMassDiscardedDaily + totalVSSMassInEffluentDaily;
 
-            // Prevenir divisão por zero
-            if (denominator === 0) {
-                errorDisplay.textContent = 'A soma das massas de SSV descartadas e no efluente é zero. Verifique os valores de entrada.';
-                errorDisplay.classList.remove('hidden');
-                return;
-            }
+        <!-- Botões de Navegação -->
 
-            // Cálculo final da Idade do Lodo (dias)
-            const calculatedISR = totalVSSMassAerationTank / denominator;
-            sludgeAgeResult.textContent = calculatedISR.toFixed(2) + ' dias'; // Arredondar para duas casas decimais
-            resultDisplay.classList.remove('hidden'); // Exibir o resultado
-        }
+        <div class="flex justify-center flex-wrap gap-4 mb-8">
 
-        // Adicionar o event listener ao botão de cálculo após o DOM ser carregado
-        document.addEventListener('DOMContentLoaded', () => {
-            document.getElementById('calculateButton').addEventListener('click', calculateSludgeAge);
-        });
-    </script>
-</body>
-</html>
+            <button
+
+                id="showSludgeAge"
+
+                class="px-4 py-2 rounded-lg font-bold text-white bg-green-600 hover:bg-green-700 shadow-md transition duration-200 ease-in-out transform hover:scale-105"
+
+            >
+
+                Calculadora Idade do Lodo
+
+            </button>
+
+            <button
+
+                id="showPhysicalChemical"
+
+                class="px-4 py-2 rounded-lg font-bold text-green-800 bg-green-200 hover:bg-green-300 shadow-md transition duration-200 ease-in-out transform hover:scale-105"
+
+            >
+
+                Eficiência Físico-Química
+
+            </button>
+
+            <button
+
+                id="showOrganicLoad"
+
+                class="px-4 py-2 rounded-lg font-bold text-green-800 bg-green-200 hover:bg-green-300 shadow-md transition duration-200 ease-in-out transform hover:scale-105"
+
+            >
+
+                Carga Orgânica (DBO/DQO)
+
+            </button>
+
+            <button
+
+                id="showHowItWorks"
+
+                class="px-4 py-2 rounded-lg font-bold text-green-800 bg-green-200 hover:bg-green-300 shadow-md transition duration-200 ease-in-out transform hover:scale-105"
+
+            >
+
+                Como Funciona
+
+            </button>
+
+        </div>
+
+
+
+        <!-- Seção da Calculadora de Idade do Lodo -->
+
+        <div id="sludgeAgeSection" class="">
+
+            <!-- Seção de Importação de CSV -->
+
+            <div id="csvDropZone" class="mb-8 p-6 rounded-lg border border-green-200 drop-zone">
+
+                <h3 class="text-xl font-semibold text-gray-700 mb-4">Analisar Dados de Planilha (CSV)</h3>
+
+                <div class="mb-4 text-sm text-yellow-700 bg-yellow-100 border border-yellow-400 rounded-md p-2 text-center">
+
+                    Atenção: Esta funcionalidade está em desenvolvimento e pode não funcionar corretamente.
+
+                </div>
+
+                <label for="csvFile" class="block text-sm font-medium text-gray-700 mb-2">
+
+                    Seleccione um arquivo CSV ou arraste-o aqui:
+
+                </label>
+
+                <input
+
+                    type="file"
+
+                    id="csvFile"
+
+                    accept=".csv"
+
+                    class="block w-full text-sm text-gray-500
+
+                        file:mr-4 file:py-2 file:px-4
+
+                        file:rounded-full file:border-0
+
+                        file:text-sm file:font-semibold
+
+                        file:bg-green-50 file:text-green-700
+
+                        hover:file:bg-green-100"
+
+                />
+
+                <button
+
+                    id="analyzeCsvButton"
+
+                    class="mt-4 w-full bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-lg shadow-md transition duration-200 ease-in-out"
+
+                >
+
+                    Analisar CSV e Preencher Campos
+
+                </button>
+
+                <div id="csvAnalysisStatus" class="mt-2 text-sm text-center text-gray-600"></div>
+
+                <div id="csvTableDisplay" class="mt-4 max-h-48 overflow-auto border border-gray-300 rounded-md">
+
+                    <!-- Tabela CSV será exibida aqui -->
+
+                </div>
+
+            </div>
+
+
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+
+                <!-- Volume do Tanque de Aeração -->
+
+                <div class="flex flex-col">
+
+                    <label for="aerationTankVolume">
+
+                        Volume do Tanque de Aeração (m³)
+
+                    </label>
+
+                    <input
+
+                        type="number"
+
+                        id="aerationTankVolume"
+
+                        placeholder="Ex: 500"
+
+                        value=""
+
+                    />
+
+                </div>
+
+
+
+                <!-- SSV no Tanque de Aeração -->
+
+                <div class="flex flex-col">
+
+                    <label for="aerationTankVSS">
+
+                        SSV no Tanque de Aeração (mg/L)
+
+                    </label>
+
+                    <input
+
+                        type="number"
+
+                        id="aerationTankVSS"
+
+                        placeholder="Ex: 3000"
+
+                        value=""
+
+                    />
+
+                </div>
+
+
+
+                <!-- Vazão de Descarte -->
+
+                <div class="flex flex-col">
+
+                    <label for="discardFlowRate">
+
+                        Vazão de Descarte (L/min)
+
+                    </label>
+
+                    <input
+
+                        type="number"
+
+                        id="discardFlowRate"
+
+                        class="p-3 border border-gray-300 rounded-lg shadow-sm focus:ring-green-500 focus:border-green-500 transition duration-150 ease-in-out text-gray-800"
+
+                        placeholder="Ex: 50"
+
+                        value=""
+
+                    />
+
+                </div>
+
+
+
+                <!-- SSV do Lodo Descartado -->
+
+                <div class="flex flex-col">
+
+                    <label for="discardVSS">
+
+                        SSV do Lodo Descartado (mg/L)
+
+                    </label>
+
+                    <input
+
+                        type="number"
+
+                        id="discardVSS"
+
+                        placeholder="Ex: 8000"
+
+                        value=""
+
+                    />
+
+                </div>
+
+
+
+                <!-- Vazão do Efluente Final -->
+
+                <div class="flex flex-col">
+
+                    <label for="effluentFlowRate">
+
+                        Vazão do Efluente Final (m³/dia)
+
+                    </label>
+
+                    <input
+
+                        type="number"
+
+                        id="effluentFlowRate"
+
+                        placeholder="Ex: 400"
+
+                        value=""
+
+                    />
+
+                </div>
+
+
+
+                <!-- SSV do Efluente Final -->
+
+                <div class="flex flex-col">
+
+                    <label for="effluentVSS">
+
+                        SSV do Efluente Final (mg/L)
+
+                    </label>
+
+                    <input
+
+                        type="number"
+
+                        id="effluentVSS"
+
+                        placeholder="Ex: 20"
+
+                        value=""
+
+                    />
+
+                </div>
+
+            </div>
+
+
+
+            <!-- Botão de Cálculo -->
+
+            <button
+
+                id="calculateButton"
+
+                class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-4 rounded-lg shadow-md transition duration-200 ease-in-out transform hover:scale-105"
+
+            >
+
+                Calcular Idade do Lodo
+
+            </button>
+
+            <!-- Removido: Botão Salvar Resultado -->
+
+
+
+            <!-- Área de Resultado/Erro -->
+
+            <div id="errorDisplay" class="mt-6 p-3 bg-red-100 border border-red-400 text-red-700 rounded-md text-center hidden"></div>
+
+            <div id="resultDisplay" class="mt-6 p-4 bg-green-100 border border-green-400 text-green-700 rounded-md text-center hidden">
+
+                <h2 class="text-lg font-semibold">Idade do Lodo Calculada:</h2>
+
+                <p id="sludgeAgeResult" class="text-2xl font-bold mt-2"></p>
+
+            </div>
+
+
+
+            <div class="mt-8 text-sm text-gray-600 text-center">
+
+                <p>
+
+                    A Idade do Lodo (ISR) é um parâmetro fundamental no controle de sistemas de lodos ativados,
+
+                    indicando o tempo médio de permanência dos sólidos voláteis no sistema.
+
+                </p>
+
+                <p class="mt-2 font-bold">
+
+                    Fórmula utilizada:
+
+                </p>
+
+                <p class="mt-1">
+
+                    ISR = (Massa de SSV no Tanque de Aeração) / (Massa de SSV Removida Diariamente)
+
+                </p>
+
+                <p class="mt-1 text-xs text-gray-500">
+
+                    Onde:
+
+                </p>
+
+                <p class="mt-1 text-xs text-gray-500">
+
+                    Massa de SSV no Tanque = Volume do Tanque (m³) * SSV do Tanque (mg/L)
+
+                </p>
+
+                <p class="mt-1 text-xs text-gray-500">
+
+                    Massa de SSV Removida = (Vazão de Descarte (L/dia) * SSV Descartado (mg/L)) + (Vazão do Efluente (L/dia) * SSV do Efluente (mg/L))
+
+                </p>
+
+                <p class="mt-2 font-bold text-green-700">
+
+                    Dias ideais para a Idade do Lodo: Geralmente entre 5 e 15 dias.
+
+                </p>
+
+                <p class="mt-1 text-xs text-gray-500">
+
+                    (Este valor pode variar dependendo do tipo de processo e da qualidade da água a ser tratada)
+
+                </p>
+
+                <p class="mt-4 text-xs text-gray-500">
+
+                    Desenvolvido por Diego Machado Sutil
+
+                </p>
+
+            </div>
+
+
+
+            <!-- Removido: Histórico da Calculadora Idade do Lodo -->
+
+        </div>
+
+
+
+        <!-- Seção de Eficiência Físico-Química -->
+
+        <div id="physicalChemicalSection" class="hidden-section">
+
+            <h3 class="text-2xl font-bold text-center text-gray-800 mb-8">
+
+                Eficiência Físico-Química
+
+            </h3>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+
+                <div class="flex flex-col">
+
+                    <label for="phyChemInitialTurbidity">Turbidez Inicial (NTU):</label>
+
+                    <input type="number" id="phyChemInitialTurbidity" placeholder="Ex: 100">
+
+                </div>
+
+                <div class="flex flex-col">
+
+                    <label for="phyChemFinalTurbidity">Turbidez Final (NTU):</label>
+
+                    <input type="number" id="phyChemFinalTurbidity" placeholder="Ex: 5">
+
+                </div>
+
+                <div class="flex flex-col">
+
+                    <label for="phyChemInitialColor">Cor Inicial (UH):</label>
+
+                    <input type="number" id="phyChemInitialColor" placeholder="Ex: 50">
+
+                </div>
+
+                <div class="flex flex-col">
+
+                    <label for="phyChemFinalColor">Cor Final (UH):</label>
+
+                    <input type="number" id="phyChemFinalColor" placeholder="Ex: 2">
+
+                </div>
+
+                <div class="flex flex-col">
+
+                    <label for="phyChemIdealDosage">Dosagem Ideal (Jar Test):</label>
+
+                    <input type="number" id="phyChemIdealDosage" placeholder="Ex: 20">
+
+                </div>
+
+                <div class="flex flex-col">
+
+                    <label for="phyChemDosageUnit">Unidade de Dosagem:</label>
+
+                    <select id="phyChemDosageUnit">
+
+                        <option value="mg/L">mg/L</option>
+
+                        <option value="mL/L">mL/L</option>
+
+                    </select>
+
+                </div>
+
+                <div class="flex flex-col md:col-span-2">
+
+                    <label for="phyChemEtaFlowRate">Vazão da ETA (m³/dia):</label>
+
+                    <input type="number" id="phyChemEtaFlowRate" placeholder="Ex: 5000">
+
+                </div>
+
+            </div>
+
+
+
+            <button id="calculatePhysicalChemical" class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-4 rounded-lg shadow-md transition duration-200 ease-in-out transform hover:scale-105">
+
+                Calcular Eficiência Físico-Química
+
+            </button>
+
+            <!-- Removido: Botão Salvar Resultado -->
+
+
+
+            <div id="phyChemErrorDisplay" class="mt-6 p-3 bg-red-100 border border-red-400 text-red-700 rounded-md text-center hidden"></div>
+
+            <div id="phyChemResultDisplay" class="mt-6 p-4 bg-green-100 border border-green-400 text-green-700 rounded-md text-center hidden">
+
+                <h4 class="text-lg font-semibold mb-2">Resultados:</h4>
+
+                <div class="flex flex-col gap-2">
+
+                    <div class="flex justify-between items-center bg-white p-3 rounded-md shadow-sm">
+
+                        <strong class="text-gray-700">Eficiência de Remoção (Turbidez):</strong>
+
+                        <span id="phyChemTurbidityEfficiency" class="font-semibold text-green-700">-- %</span>
+
+                    </div>
+
+                    <div class="flex justify-between items-center bg-white p-3 rounded-md shadow-sm">
+
+                        <strong class="text-gray-700">Eficiência de Remoção (Cor):</strong>
+
+                        <span id="phyChemColorEfficiency" class="font-semibold text-green-700">-- %</span>
+
+                    </div>
+
+                    <div class="flex justify-between items-center bg-white p-3 rounded-md shadow-sm">
+
+                        <strong class="text-gray-700">Dosagem Diária (Produto Químico):</strong>
+
+                        <span id="phyChemDailyDosage" class="font-semibold text-green-700">--</span>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="mt-8 text-sm text-gray-600 text-center">
+
+                <p>
+
+                    Esta calculadora auxilia na determinação da eficiência de remoção de turbidez e cor,
+
+                    além da dosagem diária de coagulante/floculante necessária para a sua Estação de Tratamento de Água (ETA).
+
+                </p>
+
+                <p class="mt-4 text-xs text-gray-500">
+
+                    Desenvolvido por Diego Machado Sutil
+
+                </p>
+
+            </div>
+
+
+
+            <!-- Removido: Histórico da Calculadora Eficiência Físico-Química -->
+
+        </div>
+
+
+
+        <!-- Nova Seção: Cálculo de Carga Orgânica (DBO/DQO) -->
+
+        <div id="organicLoadSection" class="hidden-section">
+
+            <h3 class="text-2xl font-bold text-center text-gray-800 mb-8">
+
+                Cálculo de Carga Orgânica (DBO/DQO)
+
+            </h3>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+
+                <div class="flex flex-col">
+
+                    <label for="organicInfluentConcentration">Concentração Influent (mg/L DBO ou DQO):</label>
+
+                    <input type="number" id="organicInfluentConcentration" placeholder="Ex: 300">
+
+                </div>
+
+                <div class="flex flex-col">
+
+                    <label for="organicEffluentConcentration">Concentração Efluente (mg/L DBO ou DQO):</label>
+
+                    <input type="number" id="organicEffluentConcentration" placeholder="Ex: 50">
+
+                </div>
+
+                <div class="flex flex-col md:col-span-2">
+
+                    <label for="organicLoadFlowRate">Vazão (m³/dia):</label>
+
+                    <input type="number" id="organicLoadFlowRate" placeholder="Ex: 5000">
+
+                </div>
+
+            </div>
+
+
+
+            <button id="calculateOrganicLoadButton" class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-4 rounded-lg shadow-md transition duration-200 ease-in-out transform hover:scale-105">
+
+                Calcular Carga Orgânica e Eficiência
+
+            </button>
+
+            <!-- Removido: Botão Salvar Resultado -->
+
+
+
+            <div id="organicLoadErrorDisplay" class="mt-6 p-3 bg-red-100 border border-red-400 text-red-700 rounded-md text-center hidden"></div>
+
+            <div id="organicLoadResultDisplay" class="mt-6 p-4 bg-green-100 border border-green-400 text-green-700 rounded-md text-center hidden">
+
+                <h4 class="text-lg font-semibold mb-2">Resultados:</h4>
+
+                <div class="flex flex-col gap-2">
+
+                    <div class="flex justify-between items-center bg-white p-3 rounded-md shadow-sm">
+
+                        <strong class="text-gray-700">Carga Orgânica Afluente:</strong>
+
+                        <span id="influentOrganicLoadResult" class="font-semibold text-green-700">-- kg/dia</span>
+
+                    </div>
+
+                    <div class="flex justify-between items-center bg-white p-3 rounded-md shadow-sm">
+
+                        <strong class="text-gray-700">Carga Orgânica Efluente:</strong>
+
+                        <span id="effluentOrganicLoadResult" class="font-semibold text-green-700">-- kg/dia</span>
+
+                    </div>
+
+                    <div class="flex justify-between items-center bg-white p-3 rounded-md shadow-sm">
+
+                        <strong class="text-gray-700">Eficiência de Remoção (Carga Orgânica):</strong>
+
+                        <span id="organicLoadEfficiencyResult" class="font-semibold text-green-700">-- %</span>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="mt-8 text-sm text-gray-600 text-center">
+
+                <p>
+
+                    Este cálculo determina a carga orgânica diária (DBO ou DQO) que entra e sai da estação,
+
+                    além da eficiência do processo de tratamento na remoção dessa carga.
+
+                </p>
+
+                <p class="mt-2 font-bold">
+
+                    Fórmulas utilizadas:
+
+                </p>
+
+                <p class="mt-1">
+
+                    Carga (kg/dia) = $\frac{{\text{Concentração (mg/L)} \times \text{Vazão (m³/dia)}}}{{1000}}$
+
+                </p>
+
+                <p class="mt-1">
+
+                    Eficiência de Remoção (%) = $\frac{{(\text{Carga Afluente} - \text{Carga Efluente})}}{{\text{Carga Afluente}}} \times 100$
+
+                </p>
+
+                <p class="mt-4 text-xs text-gray-500">
+
+                    Desenvolvido por Diego Machado Sutil
+
+                </p>
+
+            </div>
+
+
+
+            <!-- Removido: Histórico da Calculadora Carga Orgânica -->
+
+        </div>
+
+
+
+        <!-- Nova Seção: Como Funciona -->
+
+        <div id="howItWorksSection" class="hidden-section">
+
+            <h3 class="text-2xl font-bold text-center text-gray-800 mb-8">
+
+                Como Funciona
+
+            </h3>
+
+            <div class="text-base text-gray-700 space-y-4">
+
+                <p class="mb-4">
+
+                    Esta aplicação centraliza três calculadoras essenciais para o controle operacional de uma Estação de Tratamento de Efluentes (ETE) ou Estação de Tratamento de Águas Residuais (ETAR).
+
+                </p>
+
+
+
+                <h4 class="text-xl font-semibold text-gray-800 mb-2">Navegação entre Calculadoras</h4>
+
+                <p class="mb-4">
+
+                    No topo da interface, logo abaixo do título principal, você encontrará botões de navegação para cada calculadora e esta seção:
+
+                </p>
+
+                <ul class="list-disc list-inside ml-4 mb-4 space-y-1">
+
+                    <li><strong>Calculadora Idade do Lodo</strong></li>
+
+                    <li><strong>Eficiência Físico-Química</strong></li>
+
+                    <li><strong>Carga Orgânica (DBO/DQO)</strong></li>
+
+                    <li><strong>Como Funciona</strong> (Esta aba!)</li>
+
+                </ul>
+
+                <p class="mb-4">
+
+                    Ao clicar em um desses botões, a seção correspondente da calculadora será exibida, enquanto as outras serão ocultadas. O botão da calculadora ativa ficará com um fundo verde escuro e texto branco, facilitando a identificação da seção em uso.
+
+                </p>
+
+
+
+                <h4 class="text-xl font-semibold text-gray-800 mb-2">1. Calculadora Idade do Lodo</h4>
+
+                <p>Esta seção permite calcular a Idade do Lodo (ISR), um parâmetro crucial para o controle de sistemas de lodos ativados.</p>
+
+                <ul class="list-disc list-inside ml-4 space-y-1">
+
+                    <li><strong>Finalidade:</strong> Determina o tempo médio de permanência dos sólidos voláteis no sistema de aeração.</li>
+
+                    <li><strong>Campos de Entrada:</strong>
+
+                        <ul class="list-disc list-inside ml-6 space-y-0.5">
+
+                            <li><strong>Volume do Tanque de Aeração (m³):</strong> O volume total do reator biológico.</li>
+
+                            <li><strong>SSV no Tanque de Aeração (mg/L):</strong> A concentração de Sólidos Suspensos Voláteis dentro do tanque de aeração.</li>
+
+                            <li><strong>Vazão de Descarte (L/min):</strong> A vazão contínua com que o lodo é descartado do sistema.</li>
+
+                            <li><strong>SSV do Lodo Descartado (mg/L):</strong> A concentração de Sólidos Suspensos Voláteis no lodo que é descartado.</li>
+
+                            <li><strong>Vazão do Efluente Final (m³/dia):</strong> A vazão de saída do efluente tratado da estação.</li>
+
+                            <li><strong>SSV do Efluente Final (mg/L):</strong> A concentração de Sólidos Suspensos Voláteis no efluente final.</li>
+
+                        </ul>
+
+                    </li>
+
+                    <li><strong>Funcionalidade de Importação de CSV:</strong>
+
+                        <ul class="list-disc list-inside ml-6 space-y-0.5">
+
+                            <li>Você pode arrastar e soltar um arquivo <code>.csv</code> na área designada ou clicar em "Selecione um arquivo CSV".</li>
+
+                            <li>Ao clicar em "Analisar CSV e Preencher Campos", a calculadora tentará ler o CSV e preencher automaticamente os campos de SSV.</li>
+
+                            <li><strong>Formato Esperado do CSV:</strong> A calculadora procura por colunas com os cabeçalhos <strong>"Tanque"</strong> e <strong>"Sólidos Voláteis mg/l"</strong>. Ela tentará identificar os valores de SSV com base no conteúdo da coluna "Tanque":
+
+                                <ul class="list-disc list-inside ml-8 space-y-0.5">
+
+                                    <li><code>Tanque de aeração</code> para "SSV no Tanque de Aeração".</li>
+
+                                    <li><code>Reciclo</code> para "SSV do Lodo Descartado".</li>
+
+                                    <li><code>Decantador secundário</code> para "SSV do Efluente Final".</li>
+
+                                </ul>
+
+                            </li>
+
+                            <li><strong>Observação:</strong> A funcionalidade de CSV está em desenvolvimento, portanto, pode haver variações e a necessidade de ajustar o formato do seu arquivo para que seja lido corretamente (o delimitador esperado é ponto e vírgula <code>;</code> e decimais com vírgula <code>,</code>).</li>
+
+                        </ul>
+
+                    </li>
+
+                    <li><strong>Cálculo:</strong> Ao clicar em "Calcular Idade do Lodo", a aplicação usa as informações fornecidas para calcular:
+
+                        <ul class="list-disc list-inside ml-6 space-y-0.5">
+
+                            <li>Massa de SSV no Tanque (mg) = Volume do Tanque (L) * SSV do Tanque (mg/L)</li>
+
+                            <li>Massa de SSV Removida Diariamente (mg/dia) = (Vazão de Descarte (L/dia) * SSV Descartado (mg/L)) + (Vazão do Efluente (L/dia) * SSV do Efluente (mg/L))</li>
+
+                            <li><strong>ISR (dias) = (Massa de SSV no Tanque de Aeração) / (Massa de SSV Removida Diariamente)</strong></li>
+
+                        </ul>
+
+                    </li>
+
+                    <li><strong>Resultado:</strong> A Idade do Lodo calculada é exibida em "dias".</li>
+
+                </ul>
+
+
+
+                <h4 class="text-xl font-semibold text-gray-800 mb-2 mt-6">2. Eficiência Físico-Química</h4>
+
+                <p>Esta seção é baseada na sua calculadora anterior de Jar Test e ajuda a avaliar a eficácia do tratamento físico-químico.</p>
+
+                <ul class="list-disc list-inside ml-4 space-y-1">
+
+                    <li><strong>Finalidade:</strong> Calcula a eficiência de remoção de turbidez e cor, e a dosagem diária de produto químico necessária.</li>
+
+                    <li><strong>Campos de Entrada:</strong>
+
+                        <ul class="list-disc list-inside ml-6 space-y-0.5">
+
+                            <li><strong>Turbidez Inicial (NTU):</strong> Turbidez da água antes do tratamento.</li>
+
+                            <li><strong>Turbidez Final (NTU):</strong> Turbidez da água após o tratamento.</li>
+
+                            <li><strong>Cor Inicial (UH):</strong> Cor da água antes do tratamento.</li>
+
+                            <li><strong>Cor Final (UH):</strong> Cor da água após o tratamento.</li>
+
+                            <li><strong>Dosagem Ideal (Jar Test):</strong> A dosagem de coagulante/floculante determinada em testes de laboratório (com opção de mg/L ou mL/L).</li>
+
+                            <li><strong>Vazão da ETA (m³/dia):</strong> A vazão média da Estação de Tratamento de Água/Efluentes.</li>
+
+                        </ul>
+
+                    </li>
+
+                    <li><strong>Cálculo:</strong> Ao clicar em "Calcular Eficiência Físico-Química", a aplicação calcula:
+
+                        <ul class="list-disc list-inside ml-6 space-y-0.5">
+
+                            <li><strong>Eficiência de Remoção (%) = ((Valor Inicial - Valor Final) / Valor Inicial) * 100</strong>
+
+                                <ul class="list-disc list-inside ml-8 space-y-0.5">
+
+                                    <li>Aplicado para Turbidez e Cor.</li>
+
+                                </ul>
+
+                            </li>
+
+                            <li><strong>Dosagem Diária (Produto Químico):</strong> Baseado na dosagem ideal do Jar Test e na vazão da ETA.
+
+                                <ul class="list-disc list-inside ml-8 space-y-0.5">
+
+                                    <li>Se mg/L: (Dosagem Ideal * Vazão da ETA) / 1000 (resultado em kg/dia).</li>
+
+                                    <li>Se mL/L: (Dosagem Ideal * Vazão da ETA) (resultado em L/dia).</li>
+
+                                </ul>
+
+                            </li>
+
+                        </ul>
+
+                    </li>
+
+                    <li><strong>Resultados:</strong> Exibe a eficiência de remoção para turbidez e cor, e a dosagem diária do produto químico.</li>
+
+                </ul>
+
+
+
+                <h4 class="text-xl font-semibold text-gray-800 mb-2 mt-6">3. Carga Orgânica (DBO/DQO)</h4>
+
+                <p>Esta é a seção mais recente, focada na avaliação da carga orgânica que entra e sai da estação.</p>
+
+                <ul class="list-disc list-inside ml-4 space-y-1">
+
+                    <li><strong>Finalidade:</strong> Calcula a carga orgânica afluente e efluente (em kg/dia) e a eficiência de remoção.</li>
+
+                    <li><strong>Campos de Entrada:</strong>
+
+                        <ul class="list-disc list-inside ml-6 space-y-0.5">
+
+                            <li><strong>Concentração Influent (mg/L DBO ou DQO):</strong> Concentração da matéria orgânica na entrada da ETE/ETAR.</li>
+
+                            <li><strong>Concentração Efluente (mg/L DBO ou DQO):</strong> Concentração da matéria orgânica na saída da ETE/ETAR.</li>
+
+                            <li><strong>Vazão (m³/dia):</strong> A vazão de efluente da estação.</li>
+
+                        </ul>
+
+                    </li>
+
+                    <li><strong>Cálculo:</strong> Ao clicar em "Calcular Carga Orgânica e Eficiência", a aplicação calcula:
+
+                        <ul class="list-disc list-inside ml-6 space-y-0.5">
+
+                            <li><strong>Carga (kg/dia) = (Concentração (mg/L) * Vazão (m³/dia)) / 1000</strong>
+
+                                <ul class="list-disc list-inside ml-8 space-y-0.5">
+
+                                    <li>Aplicado para a carga afluente e efluente.</li>
+
+                                </ul>
+
+                            </li>
+
+                            <li><strong>Eficiência de Remoção (%) = ((Carga Afluente - Carga Efluente) / Carga Afluente) * 100</strong></li>
+
+                        </ul>
+
+                    </li>
+
+                    <li><strong>Resultados:</strong> Exibe a carga orgânica afluente, a carga orgânica efluente (ambas em kg/dia) e a eficiência de remoção percentual.</li>
+
+                </ul>
+
+
+
+                <h4 class="text-xl font-semibold text-gray-800 mb-2 mt-6">Como Usar Geralmente:</h4>
+
+                <ol class="list-decimal list-inside ml-4 space-y-1">
+
+                    <li><strong>Preencha os Campos:</strong> Insira os valores numéricos nos campos de entrada da calculadora que você deseja usar.</li>
+
+                    <li><strong>Validação:</strong> A calculadora verificará se os valores são válidos e positivos. Se houver algum erro (ex: campo vazio, valor negativo), uma mensagem de erro será exibida.</li>
+
+                    <li><strong>Calcular:</strong> Clique no botão "Calcular" da respectiva seção para ver os resultados.</li>
+
+                    <li><strong>Salvar Resultado:</strong> Após calcular, clique no botão "Salvar Resultado" para persistir os dados no banco de dados.</li>
+
+                    <li><strong>Histórico:</strong> A seção de "Histórico de Cálculos" exibirá os registros salvos, permitindo carregar ou excluir entradas.</li>
+
+                    <li><strong>Limpar:</strong> Os campos são limpos automaticamente ao carregar a página para uma nova análise.</li>
+
+                </ol>
+
+                <p class="mt-4 text-xs text-gray-500 text-center">
+
+                    Desenvolvido por Diego Machado Sutil
+
+                </p>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- TODO O CÓDIGO JAVASCRIPT AQUI -->
+
+    <script type="module">
+
+        // Importações modulares do Firebase SDK (versão 9+)
+
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-app.js";
+
+        import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-auth.js";
+
+        import { getFirestore, collection, addDoc, doc, deleteDoc, query, orderBy, onSnapshot } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-firestore.js";
+
+        import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-analytics.js";
+
+
+
+        // Variáveis do módulo
+
+        let firebaseApp = null;
+
+        let db = null;
+
+        let auth = null;
+
+        let analytics = null;
+
+        let currentUserId = null; // Para armazenar o UID do usuário autenticado
+
+        let isFirebaseInitialized = false; // Flag para controlar a inicialização
+
+
+
+        // Configuração do Firebase - Usará a configuração real se injetada, senão será nula
+
+        const firebaseConfig = typeof window.__firebase_config !== 'undefined'
+
+            ? JSON.parse(window.__firebase_config)
+
+            : null; // Use null se não houver configuração injetada
+
+
+
+        // O appId para as coleções do Firestore será o projectId (se a config estiver disponível)
+
+        const currentAppId = (firebaseConfig && firebaseConfig.projectId)
+
+            ? firebaseConfig.projectId
+
+            : 'default-app-id-github-pages'; // Fallback para GitHub Pages sem config
+
+
+
+        document.addEventListener('DOMContentLoaded', async () => {
+
+            console.log("DOM totalmente carregado. Tentando inicializar Firebase...");
+
+            
+
+            // Inicializar Firebase se a configuração estiver disponível
+
+            if (firebaseConfig && firebaseConfig.apiKey) {
+
+                try {
+
+                    console.log("Configuração do Firebase encontrada. Prosseguindo com a inicialização.");
+
+                    firebaseApp = initializeApp(firebaseConfig);
+
+                    auth = getAuth(firebaseApp);
+
+                    db = getFirestore(firebaseApp);
+
+                    analytics = getAnalytics(firebaseApp); 
+
+
+
+                    isFirebaseInitialized = true;
+
+                    console.log("Firebase SDK inicializado com sucesso.");
+
+
+
+                    onAuthStateChanged(auth, async (user) => {
+
+                        if (user) {
+
+                            currentUserId = user.uid;
+
+                            console.log("Usuário autenticado:", user.uid);
+
+                        } else {
+
+                            console.log("Usuário não autenticado, tentando autenticação anônima...");
+
+                            try {
+
+                                const injectedAuthToken = typeof window.__initial_auth_token !== 'undefined' ? window.__initial_auth_token : null;
+
+                                if (injectedAuthToken) {
+
+                                    await signInWithCustomToken(auth, injectedAuthToken);
+
+                                } else {
+
+                                    await signInAnonymously(auth);
+
+                                }
+
+                                currentUserId = auth.currentUser ? auth.currentUser.uid : crypto.randomUUID();
+
+                                console.log("Autenticação concluída. Usuário:", currentUserId);
+
+                            } catch (error) {
+
+                                console.error("Erro na autenticação:", error);
+
+                                currentUserId = crypto.randomUUID(); // Fallback para manter a UI funcional
+
+                                console.warn("Autenticação falhou. Usando ID de usuário gerado localmente:", currentUserId);
+
+                            }
+
+                        }
+
+
+
+                        const userIdDisplayElement = document.getElementById('userIdDisplay');
+
+                        if (userIdDisplayElement) {
+
+                            userIdDisplayElement.textContent = `ID do Usuário: ${currentUserId}`;
+
+                        }
+
+                        // Carregar histórico após autenticação e se Firebase estiver inicializado
+
+                        if (currentUserId && isFirebaseInitialized) { // Garante que o Firebase está pronto
+
+                            window.loadSludgeAgeHistory(currentAppId);
+
+                            window.loadPhysicalChemicalHistory(currentAppId);
+
+                            window.loadOrganicLoadHistory(currentAppId);
+
+                        }
+
+                    });
+
+                } catch (e) {
+
+                    console.error("Erro fatal ao inicializar Firebase SDK:", e);
+
+                    const userIdDisplayElement = document.getElementById('userIdDisplay');
+
+                    if (userIdDisplayElement) {
+
+                        userIdDisplayElement.textContent = `ID do Usuário: Erro ao carregar o Firebase SDK.`;
+
+                    }
+
+                    currentUserId = crypto.randomUUID(); // Fallback
+
+                    isFirebaseInitialized = false; // Garante que a flag esteja correta
+
+                }
+
+            } else {
+
+                console.warn("Configuração do Firebase (firebaseConfig) não encontrada. As funcionalidades de base de dados (salvar/carregar histórico) NÃO ESTÃO ATIVAS neste ambiente.");
+
+                document.getElementById('userIdDisplay').textContent = `ID do Usuário: Funcionalidades de DB inativas (sem config Firebase).`;
+
+                currentUserId = crypto.randomUUID(); // ID temporário para UI
+
+                isFirebaseInitialized = false; // Garante que a flag esteja correta
+
+            }
+
+
+
+            // --- Funções de Ajuda, Cálculo e Salvar (definidas no âmbito global para acessibilidade) ---
+
+
+
+            // Helper function to determine the color class for results
+
+            window.getResultColorClass = function(value, type) {
+
+                switch (type) {
+
+                    case 'sludgeAge':
+
+                        if (value >= 5 && value <= 15) { return 'result-positive'; }
+
+                        else if (value > 15 && value <= 20) { return 'result-warning'; }
+
+                        else if (value < 5 && value >= 0) { return 'result-warning'; }
+
+                        else { return 'result-negative'; }
+
+                    case 'efficiency':
+
+                        if (value >= 80) { return 'result-positive'; }
+
+                        else if (value >= 60) { return 'result-warning'; }
+
+                        else if (value >= 0) { return 'result-negative'; }
+
+                        else { return ''; }
+
+                    case 'dosage': return '';
+
+                    case 'organicLoad': return '';
+
+                    default: return '';
+
+                }
+
+            };
+
+
+
+            // Funções de Manipulação de Dados (Firestore)
+
+            window.saveData = async function(collectionName, data, appId) {
+
+                console.log(`Tentando salvar dados na coleção: ${collectionName}`);
+
+                if (!isFirebaseInitialized || !db || !currentUserId || !appId) {
+
+                    console.error("ERRO: Firestore não inicializado ou ID do usuário/appId não disponível. Não foi possível salvar os dados.");
+
+                    alert("Não foi possível salvar os dados. As funcionalidades de base de dados não estão ativas ou houve um erro de autenticação."); // Usar alert temporariamente para feedback
+
+                    return;
+
+                }
+
+                try {
+
+                    const docRef = await addDoc(collection(db, `artifacts/${appId}/users/${currentUserId}/${collectionName}`), {
+
+                        ...data,
+
+                        timestamp: new Date()
+
+                    });
+
+                    console.log("Documento salvo com ID: ", docRef.id);
+
+                    alert("Dados salvos com sucesso!"); // Feedback de sucesso
+
+                    return docRef.id;
+
+                } catch (e) {
+
+                    console.error("Erro ao adicionar documento: ", e);
+
+                    alert(`Erro ao salvar os dados: ${e.message}. Verifique as regras de segurança do Firestore.`);
+
+                }
+
+            };
+
+
+
+            window.setupHistoryListener = function(collectionName, historyDisplayId, loadFunction, appId) {
+
+                console.log(`Configurando listener para histórico da coleção: ${collectionName}`);
+
+                if (!isFirebaseInitialized || !db || !currentUserId || !appId) {
+
+                    console.warn(`AVISO: Firestore não inicializado ou ID do usuário/appId não disponível. Não foi possível carregar o histórico para ${collectionName}.`);
+
+                    const historyElement = document.getElementById(historyDisplayId);
+
+                    if (historyElement) {
+
+                        historyElement.innerHTML = `<p class="text-center text-gray-500">Funcionalidades de base de dados inativas (sem config Firebase).</p>`;
+
+                    }
+
+                    return;
+
+                }
+
+
+
+                const q = query(collection(db, `artifacts/${appId}/users/${currentUserId}/${collectionName}`), orderBy("timestamp", "desc"));
+
+
+
+                onSnapshot(q, (snapshot) => {
+
+                    console.log(`Dados recebidos para o histórico da coleção: ${collectionName}`);
+
+                    const historyData = [];
+
+                    snapshot.forEach((doc) => {
+
+                        historyData.push({ id: doc.id, ...doc.data() });
+
+                    });
+
+                    window.displayHistory(historyDisplayId, historyData, loadFunction, collectionName, appId);
+
+                }, (error) => {
+
+                    console.error(`Erro ao ouvir mudanças em ${collectionName}:`, error);
+
+                    const historyElement = document.getElementById(historyDisplayId);
+
+                    if (historyElement) {
+
+                        historyElement.innerHTML = `<p class="text-center text-red-500">Erro ao carregar histórico: ${error.message}</p>`;
+
+                    }
+
+                });
+
+            };
+
+
+
+            window.displayHistory = function(displayElementId, data, loadFunction, collectionName, appId) {
+
+                console.log(`Exibindo histórico para: ${displayElementId}`);
+
+                const displayElement = document.getElementById(displayElementId);
+
+                if (!displayElement) {
+
+                    console.warn(`Elemento de exibição de histórico ${displayElementId} não encontrado.`);
+
+                    return;
+
+                }
+
+
+
+                if (data.length === 0) {
+
+                    displayElement.innerHTML = `<p class="text-center text-gray-500">Nenhum cálculo salvo ainda.</p>`;
+
+                    return;
+
+                }
+
+
+
+                let tableHtml = `
+
+                    <table class="min-w-full divide-y divide-gray-200">
+
+                        <thead class="bg-gray-50">
+
+                            <tr>
+
+                                <th class="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Data</th>
+
+                                ${collectionName === 'sludgeAgeCalculations' ?
+
+                                    `<th class="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ISR (dias)</th>` : ''}
+
+                                ${collectionName === 'physicalChemicalCalculations' ?
+
+                                    `<th class="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Eficiência Turb. (%)</th>
+
+                                     <th class="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Eficiência Cor (%)</th>` : ''}
+
+                                ${collectionName === 'organicLoadCalculations' ?
+
+                                    `<th class="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Carga Aflu. (kg/dia)</th>
+
+                                     <th class="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Eficiência (%)</th>` : ''}
+
+                                <th class="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Ações</th>
+
+                            </tr>
+
+                        </thead>
+
+                        <tbody class="bg-white divide-y divide-gray-200">
+
+                `;
+
+
+
+                data.forEach(entry => {
+
+                    const date = entry.timestamp ? new Date(entry.timestamp.toDate()).toLocaleString() : 'N/A';
+
+                    tableHtml += `
+
+                        <tr class="hover:bg-gray-100">
+
+                            <td class="px-3 py-2 whitespace-nowrap text-sm text-gray-900">${date}</td>
+
+                            ${collectionName === 'sludgeAgeCalculations' ?
+
+                                `<td class="px-3 py-2 whitespace-nowrap text-sm text-gray-900">${entry.calculatedISR ? entry.calculatedISR.toFixed(2) + ' dias' : 'N/A'}</td>` : ''}
+
+                            ${collectionName === 'physicalChemicalCalculations' ?
+
+                                `<td class="px-3 py-2 whitespace-nowrap text-sm text-gray-900">${entry.turbidityEfficiency ? entry.turbidityEfficiency.toFixed(2) + ' %' : 'N/A'}</td>
+
+                                 <td class="px-3 py-2 whitespace-nowrap text-sm text-gray-900">${entry.colorEfficiency ? entry.colorEfficiency.toFixed(2) + ' %' : 'N/A'}</td>` : ''}
+
+                            ${collectionName === 'organicLoadCalculations' ?
+
+                                `<td class="px-3 py-2 whitespace-nowrap text-sm text-gray-900">${entry.influentLoad ? entry.influentLoad.toFixed(2) + ' kg/dia' : 'N/A'}</td>
+
+                                 <td class="px-3 py-2 whitespace-nowrap text-sm text-gray-900">${entry.efficiency ? entry.efficiency.toFixed(2) + ' %' : 'N/A'}</td>` : ''}
+
+                            <td class="px-3 py-2 whitespace-nowrap text-right text-sm font-medium flex gap-2">
+
+                                <button data-id="${entry.id}" class="text-indigo-600 hover:text-indigo-900 load-btn">Carregar</button>
+
+                                <button data-id="${entry.id}" class="text-red-600 hover:text-red-900 delete-btn">Excluir</button>
+
+                            </td>
+
+                        </tr>
+
+                    `;
+
+                });
+
+                tableHtml += `
+
+                        </tbody>
+
+                    </table>
+
+                `;
+
+                displayElement.innerHTML = tableHtml;
+
+
+
+                displayElement.querySelectorAll('.load-btn').forEach(button => {
+
+                    button.addEventListener('click', (e) => {
+
+                        const id = e.target.dataset.id;
+
+                        const entryToLoad = data.find(item => item.id === id);
+
+                        if (entryToLoad) {
+
+                            loadFunction(entryToLoad);
+
+                            console.log(`Carregado histórico para edição: ${id}`);
+
+                        }
+
+                    });
+
+                });
+
+
+
+                displayElement.querySelectorAll('.delete-btn').forEach(button => {
+
+                    button.addEventListener('click', async (e) => {
+
+                        const id = e.target.dataset.id;
+
+                        console.warn(`Ação de exclusão: Tentando apagar documento com ID ${id} da coleção ${collectionName}.`);
+
+                        // Substituindo o confirm() por feedback no console para ambientes sem pop-ups
+
+                        if (isFirebaseInitialized && db && currentUserId && appId) { // Verifica se Firebase está inicializado
+
+                            try {
+
+                                await deleteDoc(doc(db, `artifacts/${appId}/users/${currentUserId}/${collectionName}`, id));
+
+                                console.log("Documento excluído com sucesso!");
+
+                                alert("Registro excluído com sucesso!"); // Feedback de sucesso
+
+                            } catch (e) {
+
+                                console.error("Erro ao excluir documento: ", e);
+
+                                alert(`Erro ao excluir registro: ${e.message}`);
+
+                            }
+
+                        } else {
+
+                           console.error("Firestore não inicializado ou ID do usuário/appId não disponível. Não foi possível excluir o documento.");
+
+                           alert("Não foi possível excluir o registro. Funcionalidades de base de dados inativas.");
+
+                        }
+
+                    }
+
+                });
+
+            });
+
+
+
+            // Funções de Carregamento de Histórico para Cada Calculadora
+
+            window.loadSludgeAgeHistory = function(appId) {
+
+                console.log(`Chamando loadSludgeAgeHistory com appId: ${appId}`);
+
+                window.setupHistoryListener('sludgeAgeCalculations', 'sludgeAgeHistory', (entry) => {
+
+                    const aerationTankVolumeInput = document.getElementById('aerationTankVolume');
+
+                    const aerationTankVSSInput = document.getElementById('aerationTankVSS');
+
+                    const discardFlowRateInput = document.getElementById('discardFlowRate');
+
+                    const discardVSSInput = document.getElementById('discardVSS');
+
+                    const effluentFlowRateInput = document.getElementById('effluentFlowRate');
+
+                    const effluentVSSInput = document.getElementById('effluentVSS');
+
+
+
+                    if (aerationTankVolumeInput) aerationTankVolumeInput.value = entry.aerationTankVolume || '';
+
+                    if (aerationTankVSSInput) aerationTankVSSInput.value = entry.aerationTankVSS || '';
+
+                    if (discardFlowRateInput) discardFlowRateInput.value = entry.discardFlowRate || '';
+
+                    if (discardVSSInput) discardVSSInput.value = entry.discardVSS || '';
+
+                    if (effluentFlowRateInput) effluentFlowRateInput.value = entry.effluentFlowRate || '';
+
+                    if (effluentVSSInput) effluentVSSInput.value = entry.effluentVSS || '';
+
+                    window.calculateSludgeAge();
+
+                }, appId);
+
+            };
+
+
+
+            window.loadPhysicalChemicalHistory = function(appId) {
+
+                console.log(`Chamando loadPhysicalChemicalHistory com appId: ${appId}`);
+
+                window.setupHistoryListener('physicalChemicalCalculations', 'physicalChemicalHistory', (entry) => {
+
+                    const phyChemInitialTurbidityInput = document.getElementById('phyChemInitialTurbidity');
+
+                    const phyChemFinalTurbidityInput = document.getElementById('phyChemFinalTurbidity');
+
+                    const phyChemInitialColorInput = document.getElementById('phyChemInitialColor');
+
+                    const phyChemFinalColorInput = document.getElementById('phyChemFinalColor');
+
+                    const phyChemIdealDosageInput = document.getElementById('phyChemIdealDosage');
+
+                    const phyChemDosageUnitSelect = document.getElementById('phyChemDosageUnit');
+
+                    const phyChemEtaFlowRateInput = document.getElementById('phyChemEtaFlowRate');
+
+
+
+                    if (phyChemInitialTurbidityInput) phyChemInitialTurbidityInput.value = entry.initialTurbidity || '';
+
+                    if (phyChemFinalTurbidityInput) phyChemFinalTurbidityInput.value = entry.finalTurbidity || '';
+
+                    if (phyChemInitialColorInput) phyChemInitialColorInput.value = entry.initialColor || '';
+
+                    if (phyChemFinalColorInput) phyChemFinalColorInput.value = entry.finalColor || '';
+
+                    if (phyChemIdealDosageInput) phyChemIdealDosageInput.value = entry.idealDosage || '';
+
+                    if (phyChemDosageUnitSelect) phyChemDosageUnitSelect.value = entry.dosageUnit || 'mg/L';
+
+                    if (phyChemEtaFlowRateInput) phyChemEtaFlowRateInput.value = entry.etaFlowRate || '';
+
+                    window.calculatePhysicalChemicalEfficiency();
+
+                }, appId);
+
+            };
+
+
+
+            window.loadOrganicLoadHistory = function(appId) {
+
+                console.log(`Chamando loadOrganicLoadHistory com appId: ${appId}`);
+
+                window.setupHistoryListener('organicLoadCalculations', 'organicLoadHistory', (entry) => {
+
+                    const organicInfluentConcentrationInput = document.getElementById('organicInfluentConcentration');
+
+                    const organicEffluentConcentrationInput = document.getElementById('organicEffluentConcentration');
+
+                    const organicLoadFlowRateInput = document.getElementById('organicLoadFlowRate');
+
+
+
+                    if (organicInfluentConcentrationInput) organicInfluentConcentrationInput.value = entry.influentConcentration || '';
+
+                    if (organicEffluentConcentrationInput) organicEffluentConcentrationInput.value = entry.effluentConcentration || '';
+
+                    if (organicLoadFlowRateInput) organicLoadFlowRateInput.value = entry.flowRate || '';
+
+                    window.calculateOrganicLoad();
+
+                }, appId);
+
+            };
+
+
+
+
+
+            // Funções de Cálculo (Modificadas para Salvar)
+
+            window.calculateSludgeAge = async function() {
+
+                console.log('calculateSludgeAge executado.');
+
+                const aerationTankVolumeInput = document.getElementById('aerationTankVolume');
+
+                const aerationTankVSSInput = document.getElementById('aerationTankVSS');
+
+                const discardFlowRateInput = document.getElementById('discardFlowRate');
+
+                const discardVSSInput = document.getElementById('discardVSS');
+
+                const effluentFlowRateInput = document.getElementById('effluentFlowRate');
+
+                const effluentVSSInput = document.getElementById('effluentVSS');
+
+
+
+                const errorDisplay = document.getElementById('errorDisplay');
+
+                const resultDisplay = document.getElementById('resultDisplay');
+
+                const sludgeAgeResultSpan = document.getElementById('sludgeAgeResult');
+
+
+
+                if (errorDisplay) errorDisplay.classList.add('hidden');
+
+                if (resultDisplay) resultDisplay.classList.add('hidden');
+
+                if (errorDisplay) errorDisplay.textContent = '';
+
+                if (sludgeAgeResultSpan) {
+
+                    sludgeAgeResultSpan.textContent = '';
+
+                    sludgeAgeResultSpan.className = 'text-2xl font-bold mt-2';
+
+                }
+
+
+
+                const inputs = {
+
+                    aerationTankVolume: parseFloat(aerationTankVolumeInput ? aerationTankVolumeInput.value : NaN),
+
+                    aerationTankVSS: parseFloat(aerationTankVSSInput ? aerationTankVSSInput.value : NaN),
+
+                    discardFlowRate: parseFloat(discardFlowRateInput ? discardFlowRateInput.value : NaN),
+
+                    discardVSS: parseFloat(discardVSSInput ? discardVSSInput.value : NaN),
+
+                    effluentFlowRate: parseFloat(effluentFlowRateInput ? effluentFlowRateInput.value : NaN),
+
+                    effluentVSS: parseFloat(effluentVSSInput ? effluentVSSInput.value : NaN),
+
+                };
+
+
+
+                for (const key in inputs) {
+
+                    if (isNaN(inputs[key]) || inputs[key] < 0) {
+
+                        if (errorDisplay) {
+
+                            errorDisplay.textContent = 'Por favor, preencha todos os campos com valores numéricos positivos válidos.';
+
+                            errorDisplay.classList.remove('hidden');
+
+                        }
+
+                        console.log('Erro de validação em calculateSludgeAge.');
+
+                        return;
+
+                    }
+
+                }
+
+
+
+                const V_aerationTank_L = inputs.aerationTankVolume * 1000;
+
+                const Q_effluent_L_day = inputs.effluentFlowRate * 1000;
+
+
+
+                const MINUTES_IN_DAY = 1440;
+
+                const Q_discard_L_day = inputs.discardFlowRate * MINUTES_IN_DAY;
+
+
+
+                const totalVSSMassAerationTank = V_aerationTank_L * inputs.aerationTankVSS;
+
+                const totalVSSMassDiscardedDaily = Q_discard_L_day * inputs.discardVSS;
+
+                const totalVSSMassInEffluentDaily = Q_effluent_L_day * inputs.effluentVSS;
+
+
+
+                const denominator = totalVSSMassDiscardedDaily + totalVSSMassInEffluentDaily;
+
+
+
+                if (denominator === 0) {
+
+                    if (errorDisplay) {
+
+                        errorDisplay.textContent = 'A soma das massas de SSV descartadas e no efluente é zero. Verifique os valores de entrada.';
+
+                        errorDisplay.classList.remove('hidden');
+
+                    }
+
+                    console.log('Erro: Denominador zero em calculateSludgeAge.');
+
+                    return;
+
+                }
+
+
+
+                const calculatedISR = totalVSSMassAerationTank / denominator;
+
+                if (sludgeAgeResultSpan) {
+
+                    sludgeAgeResultSpan.textContent = calculatedISR.toFixed(2) + ' dias';
+
+                    sludgeAgeResultSpan.classList.add(window.getResultColorClass(calculatedISR, 'sludgeAge'));
+
+                }
+
+                if (resultDisplay) resultDisplay.classList.remove('hidden');
+
+                console.log('calculateSludgeAge concluído com sucesso. ISR:', calculatedISR);
+
+
+
+                const dataToSave = { ...inputs, calculatedISR: calculatedISR };
+
+                return dataToSave;
+
+            };
+
+
+
+            window.calculatePhysicalChemicalEfficiency = async function() {
+
+                console.log('calculatePhysicalChemicalEfficiency executado.');
+
+                const initialTurbidityInput = document.getElementById('phyChemInitialTurbidity');
+
+                const finalTurbidityInput = document.getElementById('phyChemFinalTurbidity');
+
+                const initialColorInput = document.getElementById('phyChemInitialColor');
+
+                const finalColorInput = document.getElementById('phyChemFinalColor');
+
+                const idealDosageInput = document.getElementById('phyChemIdealDosage');
+
+                const dosageUnitSelect = document.getElementById('phyChemDosageUnit');
+
+                const etaFlowRateInput = document.getElementById('phyChemEtaFlowRate');
+
+
+
+                const initialTurbidity = parseFloat(initialTurbidityInput ? initialTurbidityInput.value : NaN);
+
+                const finalTurbidity = parseFloat(finalTurbidityInput ? finalTurbidityInput.value : NaN);
+
+                const initialColor = parseFloat(initialColorInput ? initialColorInput.value : NaN);
+
+                const finalColor = parseFloat(finalColorInput ? finalColorInput.value : NaN);
+
+                const idealDosage = parseFloat(idealDosageInput ? idealDosageInput.value : NaN);
+
+                const dosageUnit = dosageUnitSelect ? dosageUnitSelect.value : '';
+
+                const etaFlowRate = parseFloat(etaFlowRateInput ? etaFlowRateInput.value : NaN);
+
+
+
+                const errorMessageDiv = document.getElementById('phyChemErrorDisplay');
+
+                const resultDisplayDiv = document.getElementById('phyChemResultDisplay');
+
+                if (errorMessageDiv) errorMessageDiv.classList.add('hidden');
+
+                if (resultDisplayDiv) resultDisplayDiv.classList.add('hidden');
+
+
+
+                const turbidityEfficiencySpan = document.getElementById('phyChemTurbidityEfficiency');
+
+                const colorEfficiencySpan = document.getElementById('phyChemColorEfficiency');
+
+                const dailyDosageSpan = document.getElementById('phyChemDailyDosage');
+
+
+
+                if (turbidityEfficiencySpan) turbidityEfficiencySpan.className = 'font-semibold text-green-700';
+
+                if (colorEfficiencySpan) colorEfficiencySpan.className = 'font-semibold text-green-700';
+
+                if (dailyDosageSpan) dailyDosageSpan.className = 'font-semibold text-green-700';
+
+
+
+                if (isNaN(initialTurbidity) || isNaN(finalTurbidity) || isNaN(initialColor) || isNaN(finalColor) ||
+
+                    isNaN(idealDosage) || isNaN(etaFlowRate) ||
+
+                    initialTurbidity < 0 || finalTurbidity < 0 || initialColor < 0 || finalColor < 0 ||
+
+                    idealDosage < 0 || etaFlowRate < 0) {
+
+                    if (errorMessageDiv) {
+
+                        errorMessageDiv.textContent = 'Por favor, preencha todos os campos com valores numéricos válidos e não negativos.';
+
+                        errorMessageDiv.classList.remove('hidden');
+
+                    }
+
+                    if (turbidityEfficiencySpan) turbidityEfficiencySpan.textContent = '-- %';
+
+                    if (colorEfficiencySpan) colorEfficiencySpan.textContent = '-- %';
+
+                    if (dailyDosageSpan) dailyDosageSpan.textContent = '--';
+
+                    return;
+
+                }
+
+
+
+                if (finalTurbidity > initialTurbidity) {
+
+                    if (errorMessageDiv) {
+
+                        errorMessageDiv.textContent = 'A turbidez final não pode ser maior que a turbidez inicial.';
+
+                        errorMessageDiv.classList.remove('hidden');
+
+                    }
+
+                    return;
+
+                }
+
+                if (finalColor > initialColor) {
+
+                    if (errorMessageDiv) {
+
+                        errorMessageDiv.textContent = 'A cor final não pode ser maior que a cor inicial.';
+
+                        errorMessageDiv.classList.remove('hidden');
+
+                    }
+
+                    return;
+
+                }
+
+
+
+                let turbidityEfficiency = 0;
+
+                if (initialTurbidity > 0) {
+
+                    turbidityEfficiency = ((initialTurbidity - finalTurbidity) / initialTurbidity) * 100;
+
+                } else if (initialTurbidity === 0 && finalTurbidity === 0) {
+
+                    turbidityEfficiency = 100;
+
+                }
+
+
+
+                let colorEfficiency = 0;
+
+                if (initialColor > 0) {
+
+                    colorEfficiency = ((initialColor - finalColor) / initialColor) * 100;
+
+                } else if (initialColor === 0 && finalColor === 0) {
+
+                     colorEfficiency = 100;
+
+                }
+
+
+
+                let dailyDosage;
+
+                let dailyDosageUnit;
+
+                if (dosageUnit === 'mg/L') {
+
+                    dailyDosage = (idealDosage * etaFlowRate) / 1000; // Result in kg/dia
+
+                    dailyDosageUnit = 'kg/dia';
+
+                } else { // mL/L
+
+                    dailyDosage = idealDosage * etaFlowRate; // Result in L/dia
+
+                    dailyDosageUnit = 'L/dia';
+
+                }
+
+
+
+                if (turbidityEfficiencySpan) turbidityEfficiencySpan.textContent = `${turbidityEfficiency.toFixed(2)} %`;
+
+                if (colorEfficiencySpan) colorEfficiencySpan.textContent = `${colorEfficiency.toFixed(2)} %`;
+
+                if (dailyDosageSpan) dailyDosageSpan.textContent = `${dailyDosage.toFixed(2)} ${dailyDosageUnit}`;
+
+
+
+                if (turbidityEfficiencySpan) turbidityEfficiencySpan.classList.add(window.getResultColorClass(turbidityEfficiency, 'efficiency'));
+
+                if (colorEfficiencySpan) colorEfficiencySpan.classList.add(window.getResultColorClass(colorEfficiency, 'efficiency'));
+
+                if (dailyDosageSpan) dailyDosageSpan.classList.add(window.getResultColorClass(0, 'dosage'));
+
+
+
+                if (resultDisplayDiv) resultDisplayDiv.classList.remove('hidden');
+
+
+
+                const dataToSave = {
+
+                    initialTurbidity, finalTurbidity, initialColor, finalColor,
+
+                    idealDosage, dosageUnit, etaFlowRate,
+
+                    turbidityEfficiency, colorEfficiency, dailyDosage, dailyDosageUnit
+
+                };
+
+                return dataToSave;
+
+            };
+
+
+
+            window.calculateOrganicLoad = async function() {
+
+                const influentConcentrationInput = document.getElementById('organicInfluentConcentration');
+
+                const effluentConcentrationInput = document.getElementById('organicEffluentConcentration');
+
+                const flowRateInput = document.getElementById('organicLoadFlowRate');
+
+
+
+                const influentConcentration = parseFloat(influentConcentrationInput ? influentConcentrationInput.value : NaN);
+
+                const effluentConcentration = parseFloat(effluentConcentrationInput ? effluentConcentrationInput.value : NaN);
+
+                const flowRate = parseFloat(flowRateInput ? flowRateInput.value : NaN);
+
+
+
+                const errorMessageDiv = document.getElementById('organicLoadErrorDisplay');
+
+                const resultDisplayDiv = document.getElementById('organicLoadResultDisplay');
+
+
+
+                if (errorMessageDiv) errorMessageDiv.classList.add('hidden');
+
+                if (resultDisplayDiv) resultDisplayDiv.classList.add('hidden');
+
+                if (errorMessageDiv) errorMessageDiv.textContent = '';
+
+                
+
+                const influentLoadSpan = document.getElementById('influentOrganicLoadResult');
+
+                const effluentLoadSpan = document.getElementById('effluentOrganicLoadResult');
+
+                const efficiencyLoadSpan = document.getElementById('organicLoadEfficiencyResult');
+
+
+
+                if (influentLoadSpan) influentLoadSpan.className = 'font-semibold text-green-700';
+
+                if (effluentLoadSpan) effluentLoadSpan.className = 'font-semibold text-green-700';
+
+                if (efficiencyLoadSpan) efficiencyLoadSpan.className = 'font-semibold text-green-700';
+
+
+
+                if (influentLoadSpan) influentLoadSpan.textContent = '-- kg/dia';
+
+                if (effluentLoadSpan) effluentLoadSpan.textContent = '-- kg/dia';
+
+                if (efficiencyLoadSpan) efficiencyLoadSpan.textContent = '-- %';
+
+
+
+                if (isNaN(influentConcentration) || isNaN(effluentConcentration) || isNaN(flowRate) ||
+
+                    influentConcentration < 0 || effluentConcentration < 0 || flowRate < 0) {
+
+                    if (errorMessageDiv) {
+
+                        errorMessageDiv.textContent = 'Por favor, preencha todos os campos com valores numéricos válidos e não negativos.';
+
+                        errorMessageDiv.classList.remove('hidden');
+
+                    }
+
+                    return;
+
+                }
+
+
+
+                if (effluentConcentration > influentConcentration) {
+
+                    if (errorMessageDiv) {
+
+                        errorMessageDiv.textContent = 'A concentração efluente não pode ser maior que a concentração afluente.';
+
+                        errorMessageDiv.classList.remove('hidden');
+
+                    }
+
+                    return;
+
+                }
+
+
+
+                const influentLoad = (influentConcentration * flowRate) / 1000;
+
+                const effluentLoad = (effluentConcentration * flowRate) / 1000;
+
+
+
+                let efficiency = 0;
+
+                if (influentLoad > 0) {
+
+                    efficiency = ((influentLoad - effluentLoad) / influentLoad) * 100;
+
+                } else if (influentLoad === 0 && effluentLoad === 0) {
+
+                    efficiency = 100;
+
+                }
+
+
+
+                if (influentLoadSpan) influentLoadSpan.textContent = `${influentLoad.toFixed(2)} kg/dia`;
+
+                if (effluentLoadSpan) effluentLoadSpan.textContent = `${effluentLoad.toFixed(2)} kg/dia`;
+
+                if (efficiencyLoadSpan) efficiencyLoadSpan.classList.add(window.getResultColorClass(efficiency, 'efficiency'));
+
+                if (influentLoadSpan) influentLoadSpan.classList.add(window.getResultColorClass(0, 'organicLoad'));
+
+                if (effluentLoadSpan) effluentLoadSpan.classList.add(window.getResultColorClass(0, 'organicLoad'));
+
+
+
+                if (resultDisplayDiv) resultDisplayDiv.classList.remove('hidden');
+
+
+
+                const dataToSave = {
+
+                    influentConcentration, effluentConcentration, flowRate,
+
+                    influentLoad, effluentLoad, efficiency
+
+                };
+
+                return dataToSave;
+
+            };
+
+
+
+
+
+            // Função para alternar entre as seções
+
+            window.showSection = function(sectionId) {
+
+                console.log(`Tentando mostrar a seção: ${sectionId}`);
+
+                // Esconder todas as seções
+
+                document.getElementById('sludgeAgeSection')?.classList.add('hidden-section');
+
+                document.getElementById('physicalChemicalSection')?.classList.add('hidden-section');
+
+                document.getElementById('organicLoadSection')?.classList.add('hidden-section');
+
+                document.getElementById('howItWorksSection')?.classList.add('hidden-section');
+
+
+
+                const targetSection = document.getElementById(sectionId);
+
+                if (targetSection) {
+
+                    targetSection.classList.remove('hidden-section');
+
+                    console.log(`Seção '${sectionId}' mostrada.`);
+
+                } else {
+
+                    console.warn(`Seção com ID '${sectionId}' não encontrada.`);
+
+                    return;
+
+                }
+
+
+
+                // Atualizar o estilo dos botões de navegação
+
+                const showSludgeAgeButton = document.getElementById('showSludgeAge');
+
+                const showPhysicalChemicalButton = document.getElementById('showPhysicalChemical');
+
+                const showOrganicLoadButton = document.getElementById('showOrganicLoad');
+
+                const showHowItWorksButton = document.getElementById('showHowItWorks');
+
+
+
+                // Resetar estilos de todos os botões para o estado inativo
+
+                const allNavButtons = [showSludgeAgeButton, showPhysicalChemicalButton, showOrganicLoadButton, showHowItWorksButton];
+
+                allNavButtons.forEach(button => {
+
+                    if (button) {
+
+                        button.classList.remove('bg-green-600', 'text-white');
+
+                        button.classList.add('bg-green-200', 'text-green-800');
+
+                    }
+
+                });
+
+
+
+                // Ativar o estilo do botão selecionado
+
+                if (sectionId === 'sludgeAgeSection' && showSludgeAgeButton) {
+
+                    showSludgeAgeButton.classList.remove('bg-green-200', 'text-green-800');
+
+                    showSludgeAgeButton.classList.add('bg-green-600', 'text-white');
+
+                } else if (sectionId === 'physicalChemicalSection' && showPhysicalChemicalButton) {
+
+                    showPhysicalChemicalButton.classList.remove('bg-green-200', 'text-green-800');
+
+                    showPhysicalChemicalButton.classList.add('bg-green-600', 'text-white');
+
+                } else if (sectionId === 'organicLoadSection' && showOrganicLoadButton) {
+
+                    showOrganicLoadButton.classList.remove('bg-green-200', 'text-green-800');
+
+                    showOrganicLoadButton.classList.add('bg-green-600', 'text-white');
+
+                } else if (sectionId === 'howItWorksSection' && showHowItWorksButton) {
+
+                    showHowItWorksButton.classList.remove('bg-green-200', 'text-green-800');
+
+                    showHowItWorksButton.classList.add('bg-green-600', 'text-white');
+
+                }
+
+            };
+
+
+
+            // Adicionar event listeners após o DOM ser carregado
+
+            const addEventListeners = () => {
+
+                console.log("Anexando event listeners aos botões...");
+
+                document.getElementById('showSludgeAge')?.addEventListener('click', () => { window.showSection('sludgeAgeSection'); });
+
+                document.getElementById('showPhysicalChemical')?.addEventListener('click', () => { window.showSection('physicalChemicalSection'); });
+
+                document.getElementById('showOrganicLoad')?.addEventListener('click', () => { window.showSection('organicLoadSection'); });
+
+                document.getElementById('showHowItWorks')?.addEventListener('click', () => { window.showSection('howItWorksSection'); });
+
+
+
+                document.getElementById('calculateButton')?.addEventListener('click', window.calculateSludgeAge);
+
+                document.getElementById('calculatePhysicalChemical')?.addEventListener('click', window.calculatePhysicalChemicalEfficiency);
+
+                document.getElementById('calculateOrganicLoadButton')?.addEventListener('click', window.calculateOrganicLoad);
+
+
+
+                // Botões de salvar agora chamam funções inativas, mas o clique será registado
+
+                document.getElementById('saveSludgeAgeData')?.addEventListener('click', async () => {
+
+                    const data = await window.calculateSludgeAge(); // Calcula mas não salva
+
+                    if (data) {
+
+                        alert("A funcionalidade de salvar dados não está ativa neste modo (sem Firebase).");
+
+                    }
+
+                });
+
+
+
+                document.getElementById('savePhysicalChemicalData')?.addEventListener('click', async () => {
+
+                    const data = await window.calculatePhysicalChemicalEfficiency();
+
+                    if (data) {
+
+                        alert("A funcionalidade de salvar dados não está ativa neste modo (sem Firebase).");
+
+                    }
+
+                });
+
+
+
+                document.getElementById('saveOrganicLoadData')?.addEventListener('click', async () => {
+
+                    const data = await window.calculateOrganicLoad();
+
+                    if (data) {
+
+                        alert("A funcionalidade de salvar dados não está ativa neste modo (sem Firebase).");
+
+                    }
+
+                });
+
+
+
+                const csvDropZone = document.getElementById('csvDropZone');
+
+                const csvFileInput = document.getElementById('csvFile');
+
+                const analyzeCsvButton = document.getElementById('analyzeCsvButton');
+
+
+
+                if (analyzeCsvButton) {
+
+                    analyzeCsvButton.addEventListener('click', () => {
+
+                        if (csvFileInput && csvFileInput.files.length > 0) {
+
+                            window.parseCSVAndFillFields(csvFileInput.files[0]);
+
+                        } else {
+
+                            const statusDisplay = document.getElementById('csvAnalysisStatus');
+
+                            if (statusDisplay) statusDisplay.textContent = 'Por favor, selecione um arquivo CSV primeiro ou arraste-o.';
+
+                        }
+
+                    });
+
+                }
+
+
+
+                if (csvDropZone) {
+
+                    csvDropZone.addEventListener('dragover', (e) => {
+
+                        e.preventDefault();
+
+                        csvDropZone.classList.add('drag-over');
+
+                    });
+
+
+
+                    csvDropZone.addEventListener('dragleave', () => {
+
+                        csvDropZone.classList.remove('drag-over');
+
+                    });
+
+
+
+                    csvDropZone.addEventListener('drop', (e) => {
+
+                        e.preventDefault();
+
+                        csvDropZone.classList.remove('drag-over');
+
+
+
+                        const files = e.dataTransfer.files;
+
+                        if (files.length > 0 && files[0].type === 'text/csv') {
+
+                            if (csvFileInput) csvFileInput.files = files;
+
+                            window.parseCSVAndFillFields(files[0]);
+
+                        } else {
+
+                            const statusDisplay = document.getElementById('csvAnalysisStatus');
+
+                            if (statusDisplay) statusDisplay.textContent = 'Por favor, arraste um arquivo CSV válido.';
+
+                        }
+
+                    });
+
+                }
+
+
+
+                if (csvFileInput) {
+
+                    csvFileInput.addEventListener('change', (e) => {
+
+                        if (e.target.files.length > 0) {
+
+                            window.parseCSVAndFillFields(e.target.files[0]);
+
+                        }
+
+                    });
+
+                }
+
+            };
+
+
+
+            // Limpar os campos de entrada ao carregar a página
+
+            const clearAllInputs = () => {
+
+                const aerationTankVolumeInput = document.getElementById('aerationTankVolume');
+
+                const aerationTankVSSInput = document.getElementById('aerationTankVSS');
+
+                const discardFlowRateInput = document.getElementById('discardFlowRate');
+
+                const discardVSSInput = document.getElementById('discardVSS');
+
+                const effluentFlowRateInput = document.getElementById('effluentFlowRate');
+
+                const effluentVSSInput = document.getElementById('effluentVSS');
+
+
+
+                if (aerationTankVolumeInput) aerationTankVolumeInput.value = '';
+
+                if (aerationTankVSSInput) aerationTankVSSInput.value = '';
+
+                if (discardFlowRateInput) discardFlowRateInput.value = '';
+
+                if (discardVSSInput) discardVSSInput.value = '';
+
+                if (effluentFlowRateInput) effluentFlowRateInput.value = '';
+
+                if (effluentVSSInput) effluentVSSInput.value = '';
+
+
+
+                const phyChemInitialTurbidityInput = document.getElementById('phyChemInitialTurbidity');
+
+                const phyChemFinalTurbidityInput = document.getElementById('phyChemFinalTurbidity');
+
+                const phyChemInitialColorInput = document.getElementById('phyChemInitialColor');
+
+                const phyChemFinalColorInput = document.getElementById('phyChemFinalColor');
+
+                const phyChemIdealDosageInput = document.getElementById('phyChemIdealDosage');
+
+                const phyChemEtaFlowRateInput = document.getElementById('phyChemEtaFlowRate');
+
+
+
+                if (phyChemInitialTurbidityInput) phyChemInitialTurbidityInput.value = '';
+
+                if (phyChemFinalTurbidityInput) phyChemFinalTurbidityInput.value = '';
+
+                if (phyChemInitialColorInput) phyChemInitialColorInput.value = '';
+
+                if (phyChemFinalColorInput) phyChemFinalColorInput.value = '';
+
+                if (phyChemIdealDosageInput) phyChemIdealDosageInput.value = '';
+
+                if (phyChemEtaFlowRateInput) phyChemEtaFlowRateInput.value = '';
+
+
+
+                const organicInfluentConcentrationInput = document.getElementById('organicInfluentConcentration');
+
+                const organicEffluentConcentrationInput = document.getElementById('organicEffluentConcentration');
+
+                const organicLoadFlowRateInput = document.getElementById('organicLoadFlowRate'); 
+
+
+
+                if (organicInfluentConcentrationInput) organicInfluentConcentrationInput.value = '';
+
+                if (organicEffluentConcentrationInput) organicEffluentConcentrationInput.value = '';
+
+                if (organicLoadFlowRateInput) organicLoadFlowRateInput.value = ''; 
+
+            };
+
+
+
+            // Funções de parsing CSV (mantidas no âmbito global)
+
+            window.parseCSVAndFillFields = function(file) {
+
+                const statusDisplay = document.getElementById('csvAnalysisStatus');
+
+                const tableDisplay = document.getElementById('csvTableDisplay');
+
+
+
+                if (statusDisplay) statusDisplay.textContent = '';
+
+                if (tableDisplay) tableDisplay.innerHTML = '';
+
+
+
+                const aerationTankVolumeInput = document.getElementById('aerationTankVolume');
+
+                const aerationTankVSSInput = document.getElementById('aerationTankVSS');
+
+                const discardFlowRateInput = document.getElementById('discardFlowRate');
+
+                const discardVSSInput = document.getElementById('discardVSS');
+
+                const effluentFlowRateInput = document.getElementById('effluentFlowRate');
+
+                const effluentVSSInput = document.getElementById('effluentVSS');
+
+
+
+                if (aerationTankVolumeInput) aerationTankVolumeInput.value = '';
+
+                if (aerationTankVSSInput) aerationTankVSSInput.value = '';
+
+                if (discardFlowRateInput) discardFlowRateInput.value = '';
+
+                if (discardVSSInput) discardVSSInput.value = '';
+
+                if (effluentFlowRateInput) effluentFlowRateInput.value = '';
+
+                if (effluentVSSInput) effluentVSSInput.value = '';
+
+
+
+                if (!file) {
+
+                    if (statusDisplay) statusDisplay.textContent = 'Nenhum arquivo selecionado.';
+
+                    return;
+
+                }
+
+
+
+                const reader = new FileReader();
+
+                reader.onload = function(e) {
+
+                    const text = e.target.result;
+
+                    const lines = text.split(/\r\n|\n/).map(line => line.trim()).filter(line => line.length > 0);
+
+
+
+                    if (lines.length === 0) {
+
+                        if (statusDisplay) statusDisplay.textContent = 'Arquivo CSV vazio ou ilegível.';
+
+                        return;
+
+                    }
+
+
+
+                    const headers = lines[0].split(';').map(h => h.trim());
+
+                    const dataRows = lines.slice(1);
+
+
+
+                    let tableHtml = `<table class="min-w-full divide-y divide-gray-200"><thead><tr>`;
+
+                    headers.forEach(header => {
+
+                        tableHtml += `<th class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">${header}</th>`;
+
+                    });
+
+                    tableHtml += '</tr></thead><tbody class="bg-white divide-y divide-gray-200">';
+
+                    dataRows.forEach(row => {
+
+                        const values = row.split(';').map(v => v.trim());
+
+                        tableHtml += '<tr>';
+
+                        values.forEach(value => {
+
+                            tableHtml += `<td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${value}</td>`;
+
+                        });
+
+                        tableHtml += '</tr>';
+
+                    });
+
+                    tableHtml += '</tbody></table>';
+
+                    if (tableDisplay) tableDisplay.innerHTML = tableHtml;
+
+
+
+                    let aerationTankVSSValues = [];
+
+                    let discardVSSValues = [];
+
+                    let effluentVSSValue = null;
+
+
+
+                    const tanqueIndex = headers.indexOf('Tanque');
+
+                    const solidosVolateisIndex = headers.indexOf('Sólidos Voláteis mg/l');
+
+
+
+                    if (tanqueIndex === -1 || solidosVolateisIndex === -1) {
+
+                        if (statusDisplay) statusDisplay.textContent = 'CSV inválido: colunas "Tanque" ou "Sólidos Voláteis mg/l" não encontradas. Verifique os cabeçalhos.';
+
+                        return;
+
+                    }
+
+
+
+                    dataRows.forEach((row, rowIndex) => {
+
+                        const values = row.split(';').map(v => v.trim());
+
+                        if (values.length <= Math.max(tanqueIndex, solidosVolateisIndex)) {
+
+                            console.warn(`Linha ${rowIndex + 2} ignorada devido a colunas insuficientes: "${row}"`);
+
+                            return;
+
+                        }
+
+
+
+                        const tanque = values[tanqueIndex];
+
+                        const ssvString = values[solidosVolateisIndex].replace(',', '.');
+
+                        const ssv = parseFloat(ssvString);
+
+
+
+                        if (isNaN(ssv)) {
+
+                            console.warn(`Linha ${rowIndex + 2}: Valor de SSV inválido "${values[solidosVolateisIndex]}" para o tanque "${tanque}".`);
+
+                            return;
+
+                        }
+
+
+
+                        if (tanque && tanque.includes('Tanque de aeração')) {
+
+                            aerationTankVSSValues.push(ssv);
+
+                        } else if (tanque && tanque.includes('Reciclo')) {
+
+                            discardVSSValues.push(ssv);
+
+                        } else if (tanque && tanque.includes('Decantador secundário')) {
+
+                            effluentVSSValue = ssv;
+
+                        }
+
+                    });
+
+
+
+                    let warnings = [];
+
+
+
+                    if (aerationTankVSSValues.length > 0) {
+
+                        const avgAerationTankVSS = aerationTankVSSValues.reduce((sum, val) => sum + val, 0) / aerationTankVSSValues.length;
+
+                        document.getElementById('aerationTankVSS').value = avgAerationTankVSS.toFixed(2);
+
+                    } else {
+
+                        warnings.push(' "SSV no Tanque de Aeração" não encontrado ou inválido no CSV.');
+
+                    }
+
+
+
+                    if (discardVSSValues.length > 0) {
+
+                        const avgDiscardVSS = discardVSSValues.reduce((sum, val) => sum + val, 0) / discardVSSValues.length;
+
+                        document.getElementById('discardVSS').value = avgDiscardVSS.toFixed(2);
+
+                    } else {
+
+                        warnings.push(' "SSV do Lodo Descartado" (Reciclo) não encontrado ou inválido no CSV.');
+
+                    }
+
+
+
+                    if (effluentVSSValue !== null) {
+
+                        document.getElementById('effluentVSS').value = effluentVSSValue.toFixed(2);
+
+                    } else {
+
+                        warnings.push(' "SSV do Efluente Final" (Decantador secundário) não encontrado ou inválido no CSV.');
+
+                    }
+
+
+
+                    if (warnings.length > 0) {
+
+                        if (statusDisplay) statusDisplay.textContent = 'Análise do CSV concluída com avisos: ' + warnings.join('');
+
+                    } else {
+
+                        if (statusDisplay) statusDisplay.textContent = 'Dados do CSV analisados e campos preenchidos com sucesso!';
+
+                    }
+
+                };
+
+
+
+                reader.onerror = function() {
+
+                    if (statusDisplay) statusDisplay.textContent = 'Erro ao ler o arquivo CSV. Verifique o formato e o delimitador (ponto e vírgula).';
+
+                };
+
+
+
+                reader.readAsText(file);
+
+            };
+
+
+
+            // Evento DOMContentLoaded para inicializar o setup
+
+            document.addEventListener('DOMContentLoaded', () => {
+
+                // Limpar os campos de entrada ao carregar a página
+
+                clearAllInputs();
+
+
+
+                // Definir a seção inicial (pode ser a idade do lodo ou como funciona)
+
+                window.showSection('sludgeAgeSection');
+
+
+
+                // Adicionar todos os event listeners
+
+                addEventListeners();
+
+            });
