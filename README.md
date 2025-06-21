@@ -1,2 +1,0 @@
-# FerramentasAnaliseETE
-Ferramentas para ete
