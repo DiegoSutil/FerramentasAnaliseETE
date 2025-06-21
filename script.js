@@ -619,30 +619,28 @@ document.addEventListener('DOMContentLoaded', async () => {
         document.getElementById('calculatePhysicalChemical')?.addEventListener('click', () => { console.log('calculatePhysicalChemical clicked'); window.calculatePhysicalChemicalEfficiency(); });
         document.getElementById('calculateOrganicLoadButton')?.addEventListener('click', () => { console.log('calculateOrganicLoadButton clicked'); window.calculateOrganicLoad(); });
 
+        // Botões de salvar agora chamam funções inativas, mas o clique será registado
         document.getElementById('saveSludgeAgeData')?.addEventListener('click', async () => {
-            console.log('saveSludgeAgeData clicked');
-            const data = await window.calculateSludgeAge();
+            console.log('saveSludgeAgeData clicked (funcionalidade inativa)');
+            const data = await window.calculateSludgeAge(); // Calcula mas não salva
             if (data) {
-                const currentAppIdValue = firebaseConfig && firebaseConfig.projectId ? firebaseConfig.projectId : 'default-app-id-github-pages';
-                await window.saveData('sludgeAgeCalculations', data, currentAppIdValue);
+                alert("A funcionalidade de salvar dados não está ativa neste modo (sem Firebase).");
             }
         });
 
         document.getElementById('savePhysicalChemicalData')?.addEventListener('click', async () => {
-            console.log('savePhysicalChemicalData clicked');
+            console.log('savePhysicalChemicalData clicked (funcionalidade inativa)');
             const data = await window.calculatePhysicalChemicalEfficiency();
             if (data) {
-                const currentAppIdValue = firebaseConfig && firebaseConfig.projectId ? firebaseConfig.projectId : 'default-app-id-github-pages';
-                await window.saveData('physicalChemicalCalculations', data, currentAppIdValue);
+                alert("A funcionalidade de salvar dados não está ativa neste modo (sem Firebase).");
             }
         });
 
         document.getElementById('saveOrganicLoadData')?.addEventListener('click', async () => {
-            console.log('saveOrganicLoadData clicked');
+            console.log('saveOrganicLoadData clicked (funcionalidade inativa)');
             const data = await window.calculateOrganicLoad();
             if (data) {
-                const currentAppIdValue = firebaseConfig && firebaseConfig.projectId ? firebaseConfig.projectId : 'default-app-id-github-pages';
-                await window.saveData('organicLoadCalculations', data, currentAppIdValue);
+                alert("A funcionalidade de salvar dados não está ativa neste modo (sem Firebase).");
             }
         });
 
@@ -733,12 +731,11 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         const organicInfluentConcentrationInput = document.getElementById('organicInfluentConcentration');
         const organicEffluentConcentrationInput = document.getElementById('organicEffluentConcentration');
-        const organicLoadFlowRateInput = document.getElementById('organicLoadFlowRate'); // AQUI ESTAVA O ERRO DE SINTAXE!!
+        const organicLoadFlowRateInput = document.getElementById('organicLoadFlowRate'); // Nome da variável corrigido
 
         if (organicInfluentConcentrationInput) organicInfluentConcentrationInput.value = '';
         if (organicEffluentConcentrationInput) organicEffluentConcentrationInput.value = '';
-        // CORREÇÃO: Usar o nome da variável correta
-        if (organicLoadFlowRateInput) organicLoadFlowRateInput.value = '';
+        if (organicLoadFlowRateInput) organicLoadFlowRateInput.value = ''; // Uso do nome da variável corrigido
         console.log('Todos os campos de input limpos.');
     };
 
